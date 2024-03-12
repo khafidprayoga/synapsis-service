@@ -10,6 +10,7 @@ import (
 	"github.com/khafidprayoga/synapsis-service/common/config"
 	synapsisv1 "github.com/khafidprayoga/synapsis-service/gen/synapsis/v1"
 	"github.com/khafidprayoga/synapsis-service/service"
+	"github.com/khafidprayoga/synapsis-service/service/repository/mongoRepository"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/credentials/insecure"
 	"net"
@@ -47,7 +48,12 @@ func main() {
 
 	log.Info(bootMsg)
 
-	handler := service.NewSynapsisServivce(log)
+	rep, errInitRepo := mongoRepository.NewRepository(log)
+	if errInitRepo != nil {
+		log.Fatal("failed to initialize repository", zap.Error(errInitRepo))
+	}
+
+	handler := service.NewSynapsisService(log, rep)
 	s := grpc.NewServer(
 		grpc.ChainUnaryInterceptor(
 			grpc_zap.UnaryServerInterceptor(log),
