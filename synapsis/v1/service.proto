@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package synapsis.v1;
+option  go_package = "github.com/khafidprayoga/synapsis-service/v1;synapsisv1";
+
+import "synapsis/v1/user.proto";
+
+service SynapsisService {
+  rpc CreateUser(synapsis.v1.CreateUserRequest) returns (synapsis.v1.CreateUserResponse);
+}

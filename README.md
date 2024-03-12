@@ -12,7 +12,7 @@ a more modern and attractive gRPC architecture.
 
 2. Building the server stub and mocks  
     ```bash
-    buf generate proto/
+    buf generate synapsis/
     ```
 3. Installing main project dependency
     ```
@@ -23,16 +23,4 @@ a more modern and attractive gRPC architecture.
     go run main.go 
     ```
    
-By default service exposed at port `:5080` 
-
-## Whats Next ?
-1. Fork this repo
-2. Implement `Update Student Method`
-
-Happy Coding!
-
-## Author
-Khafid Prayoga: khafidp@pm.me
-- [Github](https://github.com/khafidprayoga/student-svc)
-- [Medium](https://khafidprayoga.medium.com)
-- [LinkedIn](https://www.linkedin.com/in/khafidprayoga/)
+By default service exposed at port `:5080`

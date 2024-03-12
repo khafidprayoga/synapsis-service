@@ -1,0 +1,20 @@
+version: v1
+managed:
+  enabled: true
+  go_package_prefix:
+    default: github.com/khafidprayoga/service-service/gen
+    except:
+      - buf.build/googleapis/googleapis
+plugins:
+  - name: go
+    out: gen
+    opt: paths=source_relative
+  - plugin: buf.build/grpc/go
+    out: gen
+    opt:
+      - paths=source_relative
+  - plugin: grpc-gateway
+    out: gen
+    opt:
+      - paths=source_relative
+      - generate_unbound_methods=true
