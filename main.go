@@ -8,9 +8,10 @@ import (
 	"github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/khafidprayoga/synapsis-service/common/config"
+	"github.com/khafidprayoga/synapsis-service/common/conn"
 	synapsisv1 "github.com/khafidprayoga/synapsis-service/gen/synapsis/v1"
+	"github.com/khafidprayoga/synapsis-service/repository/mongoRepository"
 	"github.com/khafidprayoga/synapsis-service/service"
-	"github.com/khafidprayoga/synapsis-service/service/repository/mongoRepository"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/credentials/insecure"
 	"net"
@@ -37,6 +38,20 @@ func main() {
 		zap.Int("http port", httpPort),
 		zap.Int("rpc", rpcPort),
 	)
+
+	mongoClient, errConMongo := conn.MongoConnect(context.Background())
+	if errConMongo != nil {
+		log.Fatal("failed to connect to mongo", zap.Error(errConMongo))
+	}
+	dbName := mongoClient.Database("synapsis")
+
+	rep, errInitRepo := mongoRepository.NewRepository(log, dbName)
+	if errInitRepo != nil {
+		log.Fatal("failed to initialize repository", zap.Error(errInitRepo))
+	}
+
+	handler := service.NewSynapsisService(log, rep)
+
 	listen, err := net.Listen("tcp", fmt.Sprintf(":%v", rpcPort))
 	if err != nil {
 		panic(err)
@@ -45,15 +60,8 @@ func main() {
 	bootMsg := fmt.Sprintf(
 		"[RPC] service synapsis running on %v", rpcPort,
 	)
-
 	log.Info(bootMsg)
 
-	rep, errInitRepo := mongoRepository.NewRepository(log)
-	if errInitRepo != nil {
-		log.Fatal("failed to initialize repository", zap.Error(errInitRepo))
-	}
-
-	handler := service.NewSynapsisService(log, rep)
 	s := grpc.NewServer(
 		grpc.ChainUnaryInterceptor(
 			grpc_zap.UnaryServerInterceptor(log),
@@ -75,6 +83,7 @@ func main() {
 	} else {
 		serveRpc()
 	}
+
 	// run http service gateway
 	var (
 		ctx, cancel = context.WithCancel(context.Background())
