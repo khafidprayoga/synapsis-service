@@ -20,8 +20,7 @@ func (s mongoRepository) CreateUser(
 	ctx context.Context,
 	request *synapsisv1.CreateUserRequest,
 ) (*synapsisv1.CreateUserResponse, error) {
-
-	//  validate get user by email not exist
+	//validate get user by email not exist
 	{
 		existingUser, errGetExistingUser := s.GetUserByEmail(ctx, request.GetEmail())
 		if errGetExistingUser != nil {
@@ -39,13 +38,16 @@ func (s mongoRepository) CreateUser(
 	at := timestamppb.Now()
 	col := s.mongo.Collection(userCollection)
 	user := &synapsisv1.User{
-		Id:        uuid.New().String(),
-		FullName:  request.GetFullName(),
-		Email:     request.GetEmail(),
-		Password:  string(hashedPass),
-		Dob:       request.GetDob(),
-		CreatedAt: at,
-		UpdatedAt: at,
+		Id:       uuid.New().String(),
+		FullName: request.GetFullName(),
+		Email:    request.GetEmail(),
+		Password: string(hashedPass),
+		Dob:      request.GetDob(),
+		Dt: &synapsisv1.DT{
+			CreatedAt: at,
+			UpdatedAt: at,
+			DeletedAt: nil,
+		},
 	}
 
 	_, errInsert := col.InsertOne(ctx, user)

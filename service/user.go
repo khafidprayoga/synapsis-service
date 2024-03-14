@@ -7,7 +7,6 @@ import (
 	synapsisv1 "github.com/khafidprayoga/synapsis-service/gen/synapsis/v1"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"regexp"
 	"time"
 )
 
@@ -32,11 +31,10 @@ func (svc synapsisService) CreateUser(
 			return
 		}
 
-		pwdRegex := regexp.MustCompile("^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z0-9!@#$%^&*()_+-=]{8,}$")
-
 		passwordErr := validation.Validate(
 			request.GetPassword(),
-			validation.Match(pwdRegex),
+			validation.Required,
+			validation.Length(0, 32),
 		)
 
 		if passwordErr != nil {

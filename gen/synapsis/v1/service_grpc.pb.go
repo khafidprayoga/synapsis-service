@@ -11,6 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -19,6 +20,7 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
+	SynapsisService_Ping_FullMethodName       = "/synapsis.v1.SynapsisService/Ping"
 	SynapsisService_CreateUser_FullMethodName = "/synapsis.v1.SynapsisService/CreateUser"
 )
 
@@ -26,6 +28,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type SynapsisServiceClient interface {
+	Ping(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*PingResponse, error)
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
 }
 
@@ -35,6 +38,15 @@ type synapsisServiceClient struct {
 
 func NewSynapsisServiceClient(cc grpc.ClientConnInterface) SynapsisServiceClient {
 	return &synapsisServiceClient{cc}
+}
+
+func (c *synapsisServiceClient) Ping(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*PingResponse, error) {
+	out := new(PingResponse)
+	err := c.cc.Invoke(ctx, SynapsisService_Ping_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *synapsisServiceClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error) {
@@ -50,6 +62,7 @@ func (c *synapsisServiceClient) CreateUser(ctx context.Context, in *CreateUserRe
 // All implementations must embed UnimplementedSynapsisServiceServer
 // for forward compatibility
 type SynapsisServiceServer interface {
+	Ping(context.Context, *emptypb.Empty) (*PingResponse, error)
 	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
 	mustEmbedUnimplementedSynapsisServiceServer()
 }
@@ -58,6 +71,9 @@ type SynapsisServiceServer interface {
 type UnimplementedSynapsisServiceServer struct {
 }
 
+func (UnimplementedSynapsisServiceServer) Ping(context.Context, *emptypb.Empty) (*PingResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
+}
 func (UnimplementedSynapsisServiceServer) CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
 }
@@ -72,6 +88,24 @@ type UnsafeSynapsisServiceServer interface {
 
 func RegisterSynapsisServiceServer(s grpc.ServiceRegistrar, srv SynapsisServiceServer) {
 	s.RegisterService(&SynapsisService_ServiceDesc, srv)
+}
+
+func _SynapsisService_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SynapsisServiceServer).Ping(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SynapsisService_Ping_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SynapsisServiceServer).Ping(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _SynapsisService_CreateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -99,6 +133,10 @@ var SynapsisService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "synapsis.v1.SynapsisService",
 	HandlerType: (*SynapsisServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Ping",
+			Handler:    _SynapsisService_Ping_Handler,
+		},
 		{
 			MethodName: "CreateUser",
 			Handler:    _SynapsisService_CreateUser_Handler,

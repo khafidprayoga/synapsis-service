@@ -4,7 +4,12 @@ package synapsis.v1;
 option  go_package = "github.com/khafidprayoga/synapsis-service/v1;synapsisv1";
 
 import "synapsis/v1/user.proto";
+import "google/protobuf/empty.proto";
 
+message PingResponse{
+  string message = 1;
+}
 service SynapsisService {
+  rpc Ping(google.protobuf.Empty) returns (PingResponse);
   rpc CreateUser(synapsis.v1.CreateUserRequest) returns (synapsis.v1.CreateUserResponse);
 }

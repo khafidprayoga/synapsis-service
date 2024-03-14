@@ -86,24 +86,20 @@ func main() {
 
 	// run http service gateway
 	var (
-		ctx, cancel = context.WithCancel(context.Background())
-		mux         = runtime.NewServeMux()
+		mux = runtime.NewServeMux()
 	)
-	defer cancel()
 
-	opts := []grpc.DialOption{
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	rpcAddress := fmt.Sprintf(":%v", rpcPort)
+	rpcConn, errDial := grpc.
+		DialContext(context.Background(), rpcAddress, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if errDial != nil {
+		log.Fatal("failed to dial", zap.Error(errDial))
 	}
 
 	log.Info("registering grpc service for HTTP endpoint")
-	errSetupGW := synapsisv1.RegisterSynapsisServiceHandlerFromEndpoint(
-		ctx,
-		mux, fmt.Sprintf(":%v", httpPort),
-		opts,
-	)
-
-	if errSetupGW != nil {
-		panic(errSetupGW)
+	errRegister := synapsisv1.RegisterSynapsisServiceHandler(context.Background(), mux, rpcConn)
+	if errRegister != nil {
+		log.Fatal("failed to register grpc service", zap.Error(errRegister))
 	}
 
 	startProxyMsg := fmt.Sprintf(
