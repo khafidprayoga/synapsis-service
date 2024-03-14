@@ -9,34 +9,12 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	"golang.org/x/net/proxy"
-	"net"
 	"os"
 )
 
-type myDialer struct {
-	dialer proxy.Dialer
-}
-
-func (d myDialer) DialContext(ctx context.Context, network, address string) (net.Conn, error) {
-	if os.Getenv("SERVE_MODE") == "localhost" {
-		auth := proxy.Auth{
-			User:     os.Getenv("MONGODB_USERPROXY"),
-			Password: os.Getenv("MONGODB_PASSWORDPROXY"),
-		}
-		dialer, err := proxy.SOCKS5("tcp", os.Getenv("MONGODB_HOSTPROXY"), &auth, proxy.Direct)
-		if err != nil {
-			return nil, err
-		}
-		return dialer.Dial(network, address)
-	}
-
-	return d.dialer.Dial(network, address)
-}
-
 func MongoConnect(ctx context.Context) (*mongo.Client, error) {
 	connectionString := fmt.Sprintf(
-		"mongodb+srv://%v:%v@%v/?retryWrites=true&w=majority",
+		"mongodb+srv://%s:%s@%s/?retryWrites=true&w=majority",
 		os.Getenv("MONGODB_USERDB"),
 		os.Getenv("MONGODB_PASSWORDDB"),
 		os.Getenv("MONGODB_HOST"),
@@ -61,7 +39,6 @@ func MongoConnect(ctx context.Context) (*mongo.Client, error) {
 		ApplyURI(connectionString).
 		SetServerAPIOptions(serverAPI).
 		SetMonitor(monitor).
-		SetDialer(myDialer{dialer: proxy.Direct}).
 		SetRegistry(reg)
 
 	// Connect to MongoDB

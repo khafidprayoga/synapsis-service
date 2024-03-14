@@ -32,7 +32,7 @@ func main() {
 		log = config.GetZapLogger()
 	)
 
-	log.Info("starting Synpsis service")
+	log.Info("starting synapsis service")
 	log.Info(
 		"socket",
 		zap.Int("http port", httpPort),

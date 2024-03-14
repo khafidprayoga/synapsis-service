@@ -2,29 +2,60 @@ package service
 
 import (
 	"context"
-	"errors"
+	validation "github.com/go-ozzo/ozzo-validation"
+	"github.com/go-ozzo/ozzo-validation/is"
 	synapsisv1 "github.com/khafidprayoga/synapsis-service/gen/synapsis/v1"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+	"regexp"
+	"time"
 )
 
 func (svc synapsisService) CreateUser(
 	ctx context.Context,
-	request *synapsisv1.CreateUserRequest) (*synapsisv1.CreateUserResponse, error) {
-	// validations
+	request *synapsisv1.CreateUserRequest) (_ *synapsisv1.CreateUserResponse, err error) {
 	{
-		if request.GetEmail() == "" {
-			return nil, errors.New("email is required")
+		fullNameErr := validation.Validate(
+			request.GetFullName(),
+			validation.Required,
+			validation.Length(0, 50),
+		)
+
+		if fullNameErr != nil {
+			err = status.Errorf(codes.InvalidArgument, "invalid full name: %v", fullNameErr)
+			return
 		}
 
-		if request.GetFullName() == "" {
-			return nil, errors.New("full name is required")
+		emailErr := validation.Validate(request.GetEmail(), validation.Required, is.Email)
+		if emailErr != nil {
+			err = status.Errorf(codes.InvalidArgument, "invalid email: %v", emailErr)
+			return
 		}
 
-		if request.GetPassword() == "" {
-			return nil, errors.New("password is required")
+		pwdRegex := regexp.MustCompile("^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z0-9!@#$%^&*()_+-=]{8,}$")
+
+		passwordErr := validation.Validate(
+			request.GetPassword(),
+			validation.Match(pwdRegex),
+		)
+
+		if passwordErr != nil {
+			err = status.Errorf(codes.InvalidArgument, "invalid password: %v", passwordErr)
+			return
 		}
 
-		if request.GetDob() == nil {
-			return nil, errors.New("dob is required")
+		errDob := validation.Validate(request.GetDob(),
+			validation.Required,
+		)
+
+		if errDob != nil {
+			err = status.Errorf(codes.InvalidArgument, "invalid dob: %v", errDob)
+			return
+		}
+		min18YO := time.Now().AddDate(-18, 0, 0)
+		if request.GetDob().AsTime().After(min18YO) {
+			err = status.Errorf(codes.InvalidArgument, "dob must be at least 18 years old")
+			return
 		}
 	}
 
