@@ -59,3 +59,18 @@ func (s mongoRepository) CreateUser(
 		User: user,
 	}, nil
 }
+
+func (s mongoRepository) GetUserById(_ context.Context, userId string) (*synapsisv1.User, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (s mongoRepository) DeleteUserById(_ context.Context, userId string) error {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (s mongoRepository) UpdateUser(_ context.Context, user *synapsisv1.User) (*synapsisv1.User, error) {
+	//TODO implement me
+	panic("implement me")
+}
