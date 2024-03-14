@@ -2,17 +2,17 @@ syntax = "proto3";
 
 package synapsis.v1;
 
-import "google/protobuf/timestamp.proto";
 option  go_package = "github.com/khafidprayoga/synapsis-service/v1;synapsisv1";
+import "google/protobuf/timestamp.proto";
+import "synapsis/v1/common.proto";
 
 message User{
-    string id = 1;
-    string fullName = 2;
-    string email = 3;
-    string password = 4;
-    google.protobuf.Timestamp dob = 5;
-    google.protobuf.Timestamp createdAt = 6;
-    google.protobuf.Timestamp updatedAt = 7;
+    string id = 1; // @gotags: bson:"id"
+    string fullName = 2; // @gotags: bson:"full_name"
+    string email = 3; // @gotags: bson:"email"
+    string password = 4; // @gotags: bson:"password"
+    google.protobuf.Timestamp dob = 5; // @gotags: bson:"dob"
+    synapsis.v1.DT dt = 6; // @gotags: bson:"dt"
 }
 
 // ======== Service ========

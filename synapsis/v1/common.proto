@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package synapsis.v1;
+
+import "google/protobuf/timestamp.proto";
+option  go_package = "github.com/khafidprayoga/synapsis-service/v1;synapsisv1";
+
+message DT {
+  google.protobuf.Timestamp createdAt = 100; // @gotags: bson:"created_at"
+  google.protobuf.Timestamp updatedAt = 200; // @gotags: bson:"updated_at"
+  google.protobuf.Timestamp deletedAt = 300; // @gotags: bson:"deleted_at"
+}
