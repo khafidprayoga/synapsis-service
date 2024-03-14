@@ -57,13 +57,5 @@ func MongoConnect(ctx context.Context) (*mongo.Client, error) {
 		return nil, err
 	}
 
-	if err := client.Database(os.Getenv("MONGODB_DATABASE")).
-		RunCommand(context.TODO(), bson.D{{"ping", 1}}).Err(); err != nil {
-		fmt.Println("Failed to connect to MongoDB:", err)
-	}
-	if err != nil {
-		return nil, err
-	}
-
 	return client, nil
 }
