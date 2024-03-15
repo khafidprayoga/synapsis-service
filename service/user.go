@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
 	synapsisv1 "github.com/khafidprayoga/synapsis-service/gen/synapsis/v1"
@@ -55,6 +56,15 @@ func (svc synapsisService) CreateUser(
 			err = status.Errorf(codes.InvalidArgument, "dob must be at least 18 years old")
 			return
 		}
+	}
+
+	existingUser, errGetExistingUser := svc.repo.GetUserByEmail(ctx, request.GetEmail())
+	if errGetExistingUser != nil {
+		return nil, errGetExistingUser
+	}
+
+	if existingUser != nil {
+		return nil, errors.New("user already exist try another email")
 	}
 
 	return svc.repo.CreateUser(ctx, request)
