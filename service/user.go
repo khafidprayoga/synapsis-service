@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"errors"
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
 	synapsisv1 "github.com/khafidprayoga/synapsis-service/gen/synapsis/v1"
@@ -60,11 +59,11 @@ func (svc synapsisService) CreateUser(
 
 	existingUser, errGetExistingUser := svc.repo.GetUserByEmail(ctx, request.GetEmail())
 	if errGetExistingUser != nil {
-		return nil, errGetExistingUser
+		return nil, status.Errorf(codes.Internal, errGetExistingUser.Error())
 	}
 
 	if existingUser != nil {
-		return nil, errors.New("user already exist try another email")
+		return nil, status.Error(codes.InvalidArgument, "user already exist try another email")
 	}
 
 	return svc.repo.CreateUser(ctx, request)
