@@ -22,8 +22,9 @@ import (
 )
 
 var (
-	httpPort int
-	rpcPort  int
+	migrateSchema bool
+	httpPort      int
+	rpcPort       int
 )
 
 func main() {
@@ -39,6 +40,22 @@ func main() {
 		zap.Int("rpc", rpcPort),
 	)
 
+	log.Info("connecting to postgres")
+	psqlDB, errConPsql := conn.PostgresConnect()
+	if errConPsql != nil {
+		log.Fatal("failed to connect to postgres", zap.Error(errConPsql))
+	}
+
+	// checks
+	psqlDB.Raw("SELECT 1 = 1").Debug()
+
+	if migrateSchema {
+		psqlDB.AutoMigrate(
+			&synapsisv1.ProductCategory{},
+		)
+	}
+
+	log.Info("connecting to mongo")
 	mongoClient, errConMongo := conn.MongoConnect(context.Background())
 	if errConMongo != nil {
 		log.Fatal("failed to connect to mongo", zap.Error(errConMongo))
@@ -116,5 +133,6 @@ func main() {
 func flagParse() {
 	flag.IntVar(&httpPort, "http", 0, "http port")
 	flag.IntVar(&rpcPort, "rpc", config.GRPCAddress, "rpc port")
+	flag.BoolVar(&migrateSchema, "migrate", false, "migrate schema")
 	flag.Parse()
 }

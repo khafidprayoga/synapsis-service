@@ -4,11 +4,11 @@ import (
 	"context"
 	"fmt"
 	codecs "github.com/amsokol/mongo-go-driver-protobuf"
+	_ "github.com/joho/godotenv/autoload"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/event"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-
 	"os"
 )
 
