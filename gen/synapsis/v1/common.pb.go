@@ -26,9 +26,9 @@ type DT struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,100,opt,name=createdAt,proto3" json:"createdAt,omitempty" bson:"created_at"` // @gotags: bson:"created_at"
-	UpdatedAt *timestamppb.Timestamp `protobuf:"bytes,200,opt,name=updatedAt,proto3" json:"updatedAt,omitempty" bson:"updated_at"` // @gotags: bson:"updated_at"
-	DeletedAt *timestamppb.Timestamp `protobuf:"bytes,300,opt,name=deletedAt,proto3" json:"deletedAt,omitempty" bson:"deleted_at"` // @gotags: bson:"deleted_at"
+	CreatedAt *timestamppb.Timestamp `protobuf:"bytes,100,opt,name=createdAt,proto3" json:"createdAt,omitempty" bson:"created_at"`
+	UpdatedAt *timestamppb.Timestamp `protobuf:"bytes,200,opt,name=updatedAt,proto3" json:"updatedAt,omitempty" bson:"updated_at"`
+	DeletedAt *timestamppb.Timestamp `protobuf:"bytes,300,opt,name=deletedAt,proto3" json:"deletedAt,omitempty" bson:"deleted_at"`
 }
 
 func (x *DT) Reset() {
