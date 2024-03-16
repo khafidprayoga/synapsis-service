@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package synapsis.v1;
+
+option  go_package = "github.com/khafidprayoga/synapsis-service/v1;synapsisv1";
+import "google/protobuf/timestamp.proto";
+import "synapsis/v1/common.proto";
+
+message ProductCategory{
+    string id = 1; // @gotags: gorm:"id"
+    string name = 2; // @gotags: gorm:"name"
+    string description = 3; // @gotags: gorm:"description"
+    google.protobuf.Timestamp createdAt = 4; // @gotags: gorm:"created_at"
+    google.protobuf.Timestamp updatedAt = 5; // @gotags: gorm:"updated_at"
+}
+
+// ======== Service ========
+message CreateProductCategoryRequest{
+    string name = 1;
+    string description = 2;
+}
+
+message CreateProductCategoryResponse{
+    ProductCategory productCategory = 1;
+}
+
+message GetProductCategoryRequest{
+    string id = 1;
+}
+
+message GetProductCategoryResponse{
+    ProductCategory productCategory = 1;
+}
+
+message UpdateProductCategoryRequest{
+    string id = 1;
+    string name = 2;
+    string description = 3;
+}
+
+message DeleteProductCategoryRequest{
+    string id = 1;
+}
+
+message GetProductCategoriesRequest{
+    Pagination pagination = 1;
+}
+
+message GetProductCategoriesResponse{
+    repeated ProductCategory productCategories = 1;
+    Pagination pagination = 2;
+}

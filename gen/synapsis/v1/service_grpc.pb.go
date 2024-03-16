@@ -20,8 +20,13 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	SynapsisService_Ping_FullMethodName       = "/synapsis.v1.SynapsisService/Ping"
-	SynapsisService_CreateUser_FullMethodName = "/synapsis.v1.SynapsisService/CreateUser"
+	SynapsisService_Ping_FullMethodName                  = "/synapsis.v1.SynapsisService/Ping"
+	SynapsisService_CreateUser_FullMethodName            = "/synapsis.v1.SynapsisService/CreateUser"
+	SynapsisService_CreateProductCategory_FullMethodName = "/synapsis.v1.SynapsisService/CreateProductCategory"
+	SynapsisService_GetProductCategory_FullMethodName    = "/synapsis.v1.SynapsisService/GetProductCategory"
+	SynapsisService_UpdateProductCategory_FullMethodName = "/synapsis.v1.SynapsisService/UpdateProductCategory"
+	SynapsisService_DeleteProductCategory_FullMethodName = "/synapsis.v1.SynapsisService/DeleteProductCategory"
+	SynapsisService_GetProductCategories_FullMethodName  = "/synapsis.v1.SynapsisService/GetProductCategories"
 )
 
 // SynapsisServiceClient is the client API for SynapsisService service.
@@ -29,7 +34,14 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type SynapsisServiceClient interface {
 	Ping(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*PingResponse, error)
+	// Auth
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
+	// Product Category
+	CreateProductCategory(ctx context.Context, in *CreateProductCategoryRequest, opts ...grpc.CallOption) (*CreateProductCategoryResponse, error)
+	GetProductCategory(ctx context.Context, in *GetProductCategoryRequest, opts ...grpc.CallOption) (*GetProductCategoryResponse, error)
+	UpdateProductCategory(ctx context.Context, in *UpdateProductCategoryRequest, opts ...grpc.CallOption) (*GetProductCategoryResponse, error)
+	DeleteProductCategory(ctx context.Context, in *DeleteProductCategoryRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	GetProductCategories(ctx context.Context, in *GetProductCategoriesRequest, opts ...grpc.CallOption) (*GetProductCategoriesResponse, error)
 }
 
 type synapsisServiceClient struct {
@@ -58,12 +70,64 @@ func (c *synapsisServiceClient) CreateUser(ctx context.Context, in *CreateUserRe
 	return out, nil
 }
 
+func (c *synapsisServiceClient) CreateProductCategory(ctx context.Context, in *CreateProductCategoryRequest, opts ...grpc.CallOption) (*CreateProductCategoryResponse, error) {
+	out := new(CreateProductCategoryResponse)
+	err := c.cc.Invoke(ctx, SynapsisService_CreateProductCategory_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *synapsisServiceClient) GetProductCategory(ctx context.Context, in *GetProductCategoryRequest, opts ...grpc.CallOption) (*GetProductCategoryResponse, error) {
+	out := new(GetProductCategoryResponse)
+	err := c.cc.Invoke(ctx, SynapsisService_GetProductCategory_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *synapsisServiceClient) UpdateProductCategory(ctx context.Context, in *UpdateProductCategoryRequest, opts ...grpc.CallOption) (*GetProductCategoryResponse, error) {
+	out := new(GetProductCategoryResponse)
+	err := c.cc.Invoke(ctx, SynapsisService_UpdateProductCategory_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *synapsisServiceClient) DeleteProductCategory(ctx context.Context, in *DeleteProductCategoryRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, SynapsisService_DeleteProductCategory_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *synapsisServiceClient) GetProductCategories(ctx context.Context, in *GetProductCategoriesRequest, opts ...grpc.CallOption) (*GetProductCategoriesResponse, error) {
+	out := new(GetProductCategoriesResponse)
+	err := c.cc.Invoke(ctx, SynapsisService_GetProductCategories_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // SynapsisServiceServer is the server API for SynapsisService service.
 // All implementations must embed UnimplementedSynapsisServiceServer
 // for forward compatibility
 type SynapsisServiceServer interface {
 	Ping(context.Context, *emptypb.Empty) (*PingResponse, error)
+	// Auth
 	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
+	// Product Category
+	CreateProductCategory(context.Context, *CreateProductCategoryRequest) (*CreateProductCategoryResponse, error)
+	GetProductCategory(context.Context, *GetProductCategoryRequest) (*GetProductCategoryResponse, error)
+	UpdateProductCategory(context.Context, *UpdateProductCategoryRequest) (*GetProductCategoryResponse, error)
+	DeleteProductCategory(context.Context, *DeleteProductCategoryRequest) (*emptypb.Empty, error)
+	GetProductCategories(context.Context, *GetProductCategoriesRequest) (*GetProductCategoriesResponse, error)
 	mustEmbedUnimplementedSynapsisServiceServer()
 }
 
@@ -76,6 +140,21 @@ func (UnimplementedSynapsisServiceServer) Ping(context.Context, *emptypb.Empty) 
 }
 func (UnimplementedSynapsisServiceServer) CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
+}
+func (UnimplementedSynapsisServiceServer) CreateProductCategory(context.Context, *CreateProductCategoryRequest) (*CreateProductCategoryResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateProductCategory not implemented")
+}
+func (UnimplementedSynapsisServiceServer) GetProductCategory(context.Context, *GetProductCategoryRequest) (*GetProductCategoryResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProductCategory not implemented")
+}
+func (UnimplementedSynapsisServiceServer) UpdateProductCategory(context.Context, *UpdateProductCategoryRequest) (*GetProductCategoryResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateProductCategory not implemented")
+}
+func (UnimplementedSynapsisServiceServer) DeleteProductCategory(context.Context, *DeleteProductCategoryRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteProductCategory not implemented")
+}
+func (UnimplementedSynapsisServiceServer) GetProductCategories(context.Context, *GetProductCategoriesRequest) (*GetProductCategoriesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProductCategories not implemented")
 }
 func (UnimplementedSynapsisServiceServer) mustEmbedUnimplementedSynapsisServiceServer() {}
 
@@ -126,6 +205,96 @@ func _SynapsisService_CreateUser_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _SynapsisService_CreateProductCategory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateProductCategoryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SynapsisServiceServer).CreateProductCategory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SynapsisService_CreateProductCategory_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SynapsisServiceServer).CreateProductCategory(ctx, req.(*CreateProductCategoryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SynapsisService_GetProductCategory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetProductCategoryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SynapsisServiceServer).GetProductCategory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SynapsisService_GetProductCategory_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SynapsisServiceServer).GetProductCategory(ctx, req.(*GetProductCategoryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SynapsisService_UpdateProductCategory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateProductCategoryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SynapsisServiceServer).UpdateProductCategory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SynapsisService_UpdateProductCategory_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SynapsisServiceServer).UpdateProductCategory(ctx, req.(*UpdateProductCategoryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SynapsisService_DeleteProductCategory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteProductCategoryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SynapsisServiceServer).DeleteProductCategory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SynapsisService_DeleteProductCategory_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SynapsisServiceServer).DeleteProductCategory(ctx, req.(*DeleteProductCategoryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SynapsisService_GetProductCategories_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetProductCategoriesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SynapsisServiceServer).GetProductCategories(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SynapsisService_GetProductCategories_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SynapsisServiceServer).GetProductCategories(ctx, req.(*GetProductCategoriesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // SynapsisService_ServiceDesc is the grpc.ServiceDesc for SynapsisService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -140,6 +309,26 @@ var SynapsisService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateUser",
 			Handler:    _SynapsisService_CreateUser_Handler,
+		},
+		{
+			MethodName: "CreateProductCategory",
+			Handler:    _SynapsisService_CreateProductCategory_Handler,
+		},
+		{
+			MethodName: "GetProductCategory",
+			Handler:    _SynapsisService_GetProductCategory_Handler,
+		},
+		{
+			MethodName: "UpdateProductCategory",
+			Handler:    _SynapsisService_UpdateProductCategory_Handler,
+		},
+		{
+			MethodName: "DeleteProductCategory",
+			Handler:    _SynapsisService_DeleteProductCategory_Handler,
+		},
+		{
+			MethodName: "GetProductCategories",
+			Handler:    _SynapsisService_GetProductCategories_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

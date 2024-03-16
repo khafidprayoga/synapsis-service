@@ -3,13 +3,28 @@ syntax = "proto3";
 package synapsis.v1;
 option  go_package = "github.com/khafidprayoga/synapsis-service/v1;synapsisv1";
 
-import "synapsis/v1/user.proto";
 import "google/protobuf/empty.proto";
+
+import "synapsis/v1/user.proto";
+import "synapsis/v1/product_category.proto";
 
 message PingResponse{
   string message = 1;
 }
+
 service SynapsisService {
   rpc Ping(google.protobuf.Empty) returns (PingResponse);
+  // Auth
   rpc CreateUser(synapsis.v1.CreateUserRequest) returns (synapsis.v1.CreateUserResponse);
+  // Auth
+
+  // Product Category
+  rpc CreateProductCategory(synapsis.v1.CreateProductCategoryRequest) returns (synapsis.v1.CreateProductCategoryResponse);
+  rpc GetProductCategory(synapsis.v1.GetProductCategoryRequest) returns (synapsis.v1.GetProductCategoryResponse);
+  rpc UpdateProductCategory(synapsis.v1.UpdateProductCategoryRequest) returns (synapsis.v1.GetProductCategoryResponse);
+  rpc DeleteProductCategory(synapsis.v1.DeleteProductCategoryRequest) returns (google.protobuf.Empty);
+  rpc GetProductCategories(synapsis.v1.GetProductCategoriesRequest) returns (synapsis.v1.GetProductCategoriesResponse);
+  // Product Category
+
+
 }
