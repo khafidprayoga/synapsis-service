@@ -4,6 +4,9 @@ import (
 	"context"
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
+	"golang.org/x/text/language"
+	epb "google.golang.org/genproto/googleapis/rpc/errdetails"
+
 	synapsisv1 "github.com/khafidprayoga/synapsis-service/gen/synapsis/v1"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -63,7 +66,14 @@ func (svc synapsisService) CreateUser(
 	}
 
 	if existingUser != nil {
-		return nil, status.Error(codes.InvalidArgument, "user already exist try another email")
+		st := status.New(codes.InvalidArgument, "email already taken")
+		_, e := st.WithDetails(
+			&epb.LocalizedMessage{
+				Locale:  language.Indonesian.String(),
+				Message: "email sudah terpakai",
+			})
+
+		return nil, e
 	}
 
 	return svc.repo.CreateUser(ctx, request)
