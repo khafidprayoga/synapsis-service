@@ -105,9 +105,27 @@ func (s mongoRepository) GetUserById(ctx context.Context, userId string) (*synap
 	return u, nil
 }
 
-func (s mongoRepository) DeleteUserById(_ context.Context, userId string) error {
-	//TODO implement me
-	panic("implement me")
+func (s mongoRepository) DeleteUserById(ctx context.Context, userId string) error {
+	col := s.mongo.Collection(userCollection)
+	match := bson.M{
+		"id": userId,
+		"dt.deleted_at": bson.M{
+			"$type": bson.TypeNull,
+		},
+	}
+
+	update := bson.M{
+		"$set": bson.M{
+			"dt.deleted_at": timestamppb.Now(),
+		},
+	}
+
+	_, errDelete := col.UpdateOne(ctx, match, update)
+	if errDelete != nil {
+		return errDelete
+	}
+
+	return nil
 }
 
 func (s mongoRepository) UpdateUser(_ context.Context, user *synapsisv1.User) (*synapsisv1.User, error) {
