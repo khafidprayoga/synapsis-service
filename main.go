@@ -17,6 +17,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"net"
 	"net/http"
+	"strings"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -52,6 +53,8 @@ func main() {
 	psqlDB.Raw("SELECT 1 = 1").Debug()
 
 	if migrateSchema {
+		psqlDB.Raw(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`)
+		log.Info("migrating postgres schema")
 		psqlDB.AutoMigrate(
 			&synapsisv1.ProductCategory{},
 		)
@@ -75,8 +78,11 @@ func main() {
 
 		log.Info("seeding product category data")
 		r := psqlDB.Create(&productCategory)
+
 		if r.Error != nil {
-			log.Fatal("failed to seed product category", zap.Error(r.Error))
+			if !strings.Contains(r.Error.Error(), "duplicate key value violates unique constraint") {
+				log.Fatal("failed to seed product category", zap.Error(r.Error))
+			}
 		}
 
 		// seed to mongo data
