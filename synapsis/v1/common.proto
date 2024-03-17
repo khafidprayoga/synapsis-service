@@ -6,9 +6,9 @@ import "google/protobuf/timestamp.proto";
 option  go_package = "github.com/khafidprayoga/synapsis-service/v1;synapsisv1";
 
 message DT {
-  google.protobuf.Timestamp createdAt = 100; // @gotags: bson:"created_at" gorm:"created_at"
-  google.protobuf.Timestamp updatedAt = 200; // @gotags: bson:"updated_at" gorm:"updated_at"
-  google.protobuf.Timestamp deletedAt = 300; // @gotags: bson:"deleted_at" gorm:"deleted_at"
+  google.protobuf.Timestamp createdAt = 100; // @gotags: bson:"created_at"
+  google.protobuf.Timestamp updatedAt = 200; // @gotags: bson:"updated_at"
+  google.protobuf.Timestamp deletedAt = 300; // @gotags: bson:"deleted_at"
 }
 
 message Pagination {

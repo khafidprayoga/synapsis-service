@@ -7,11 +7,11 @@ import "google/protobuf/timestamp.proto";
 import "synapsis/v1/common.proto";
 
 message ProductCategory{
-    string id = 1; // @gotags: gorm:"id"
-    string name = 2; // @gotags: gorm:"name"
-    string description = 3; // @gotags: gorm:"description"
-    google.protobuf.Timestamp createdAt = 4; // @gotags: gorm:"created_at"
-    google.protobuf.Timestamp updatedAt = 5; // @gotags: gorm:"updated_at"
+    string id = 1; // @gotags: gorm:"primaryKey;type:uuid;default:uuid_generate_v4()"
+    string name = 2;  // @gotags: gorm:"type:varchar(255);UNIQUE"
+    string description = 3; // @gotags: gorm:"type:text"
+    int64 createdAt = 4; // @gotags: gorm:"autoCreateTime:milli;INDEX"
+    int64 updatedAt = 5; // @gotags: gorm:"autoUpdateTime:milli"
 }
 
 // ======== Service ========
