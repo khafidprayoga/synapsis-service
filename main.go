@@ -49,13 +49,14 @@ func main() {
 		log.Fatal("failed to connect to postgres", zap.Error(errConPsql))
 	}
 
+	psqlDBDebug := psqlDB.Debug()
 	// checks
-	psqlDB.Raw("SELECT 1 = 1").Debug()
+	psqlDBDebug.Raw("SELECT 1 = 1")
 
 	if migrateSchema {
-		psqlDB.Raw(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`)
+		psqlDBDebug.Raw(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`)
 		log.Info("migrating postgres schema")
-		psqlDB.AutoMigrate(
+		psqlDBDebug.AutoMigrate(
 			&synapsisv1.ProductCategory{},
 		)
 	}
@@ -77,7 +78,7 @@ func main() {
 		productCategory := seed.NewProductCategory()
 
 		log.Info("seeding product category data")
-		r := psqlDB.Create(&productCategory)
+		r := psqlDBDebug.Create(&productCategory)
 
 		if r.Error != nil {
 			if !strings.Contains(r.Error.Error(), "duplicate key value violates unique constraint") {
