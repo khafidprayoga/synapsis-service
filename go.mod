@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/amsokol/mongo-go-driver-protobuf v1.0.0-rc5
+	github.com/go-faker/faker/v4 v4.3.0
 	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
 	github.com/google/uuid v1.3.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0

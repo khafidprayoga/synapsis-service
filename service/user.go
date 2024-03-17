@@ -76,5 +76,5 @@ func (svc synapsisService) CreateUser(
 		return nil, e
 	}
 
-	return svc.repo.CreateUser(ctx, request)
+	return svc.repo.CreateUser(ctx, request, false)
 }

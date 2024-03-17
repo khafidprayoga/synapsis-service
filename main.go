@@ -11,6 +11,7 @@ import (
 	"github.com/khafidprayoga/synapsis-service/common/conn"
 	synapsisv1 "github.com/khafidprayoga/synapsis-service/gen/synapsis/v1"
 	"github.com/khafidprayoga/synapsis-service/repository/mongoRepository"
+	"github.com/khafidprayoga/synapsis-service/seed"
 	"github.com/khafidprayoga/synapsis-service/service"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/credentials/insecure"
@@ -22,9 +23,10 @@ import (
 )
 
 var (
-	migrateSchema bool
-	httpPort      int
-	rpcPort       int
+	migrateSchema  bool
+	seedDataSource bool
+	httpPort       int
+	rpcPort        int
 )
 
 func main() {
@@ -62,12 +64,41 @@ func main() {
 	}
 	dbName := mongoClient.Database("synapsis")
 
-	rep, errInitRepo := mongoRepository.NewRepository(log, dbName)
+	mongoRep, errInitRepo := mongoRepository.NewRepository(log, dbName)
 	if errInitRepo != nil {
 		log.Fatal("failed to initialize repository", zap.Error(errInitRepo))
 	}
 
-	handler := service.NewSynapsisService(log, rep)
+	if seedDataSource {
+		// seed to postgres data
+		productCategory := seed.NewProductCategory()
+
+		log.Info("seeding product category data")
+		r := psqlDB.Create(&productCategory)
+		if r.Error != nil {
+			log.Fatal("failed to seed product category", zap.Error(r.Error))
+		}
+
+		// seed to mongo data
+		// user domain
+		{
+			user := seed.NewUser()
+			log.Info("seeding user data")
+			for _, u := range user {
+				_, errInsert := mongoRep.CreateUser(context.Background(), &synapsisv1.CreateUserRequest{
+					FullName: u.GetFullName(),
+					Email:    u.GetEmail(),
+					Password: u.GetPassword(),
+					Dob:      u.GetDob(),
+				}, true)
+				if errInsert != nil {
+					log.Fatal("failed to seed user", zap.Error(errInsert))
+				}
+			}
+		}
+	}
+
+	handler := service.NewSynapsisService(log, mongoRep)
 
 	listen, err := net.Listen("tcp", fmt.Sprintf(":%v", rpcPort))
 	if err != nil {
@@ -134,5 +165,7 @@ func flagParse() {
 	flag.IntVar(&httpPort, "http", 0, "http port")
 	flag.IntVar(&rpcPort, "rpc", config.GRPCAddress, "rpc port")
 	flag.BoolVar(&migrateSchema, "migrate", false, "migrate schema")
+	flag.BoolVar(&seedDataSource, "seed", false, "seed data")
+
 	flag.Parse()
 }

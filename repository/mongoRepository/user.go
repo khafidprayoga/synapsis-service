@@ -5,11 +5,11 @@ import (
 	"errors"
 	"fmt"
 	"github.com/google/uuid"
+	commonLib "github.com/khafidprayoga/synapsis-service/common/lib"
 	synapsisv1 "github.com/khafidprayoga/synapsis-service/gen/synapsis/v1"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.uber.org/zap"
-	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -46,8 +46,9 @@ func (s mongoRepository) GetUserByEmail(ctx context.Context, email string) (*syn
 func (s mongoRepository) CreateUser(
 	ctx context.Context,
 	request *synapsisv1.CreateUserRequest,
+	isSeeder bool,
 ) (*synapsisv1.CreateUserResponse, error) {
-	hashedPass, errHash := bcrypt.GenerateFromPassword([]byte(request.Password), bcrypt.DefaultCost)
+	hashedPass, errHash := commonLib.HashPasssword(request.Password)
 	if errHash != nil {
 		return nil, errors.New("error hashing password")
 	}
@@ -65,6 +66,11 @@ func (s mongoRepository) CreateUser(
 			UpdatedAt: at,
 			DeletedAt: nil,
 		},
+	}
+
+	// flag for seed new user data
+	if isSeeder {
+		user.Dt.DeletedAt = timestamppb.Now()
 	}
 
 	_, errInsert := col.InsertOne(ctx, user)
