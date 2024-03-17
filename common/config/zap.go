@@ -1,4 +1,4 @@
-package config
+package commonConf
 
 import (
 	"go.uber.org/zap"

@@ -7,8 +7,8 @@ import (
 	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	"github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/khafidprayoga/synapsis-service/common/config"
-	"github.com/khafidprayoga/synapsis-service/common/conn"
+	commonConf "github.com/khafidprayoga/synapsis-service/common/config"
+	commonConn "github.com/khafidprayoga/synapsis-service/common/conn"
 	synapsisv1 "github.com/khafidprayoga/synapsis-service/gen/synapsis/v1"
 	"github.com/khafidprayoga/synapsis-service/repository/mongoRepository"
 	"github.com/khafidprayoga/synapsis-service/seed"
@@ -33,7 +33,7 @@ var (
 func main() {
 	flagParse()
 	var (
-		log = config.GetZapLogger()
+		log = commonConf.GetZapLogger()
 	)
 
 	log.Info("starting synapsis service")
@@ -44,7 +44,7 @@ func main() {
 	)
 
 	log.Info("connecting to postgres")
-	psqlDB, errConPsql := conn.PostgresConnect()
+	psqlDB, errConPsql := commonConn.PostgresConnect()
 	if errConPsql != nil {
 		log.Fatal("failed to connect to postgres", zap.Error(errConPsql))
 	}
@@ -62,7 +62,7 @@ func main() {
 	}
 
 	log.Info("connecting to mongo")
-	mongoClient, errConMongo := conn.MongoConnect(context.Background())
+	mongoClient, errConMongo := commonConn.MongoConnect(context.Background())
 	if errConMongo != nil {
 		log.Fatal("failed to connect to mongo", zap.Error(errConMongo))
 	}
@@ -170,7 +170,7 @@ func main() {
 
 func flagParse() {
 	flag.IntVar(&httpPort, "http", 0, "http port")
-	flag.IntVar(&rpcPort, "rpc", config.GRPCAddress, "rpc port")
+	flag.IntVar(&rpcPort, "rpc", commonConf.GRPCAddress, "rpc port")
 	flag.BoolVar(&migrateSchema, "migrate", false, "migrate schema")
 	flag.BoolVar(&seedDataSource, "seed", false, "seed data")
 
