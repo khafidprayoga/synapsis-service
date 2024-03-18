@@ -12,7 +12,7 @@ type mongoRepository struct {
 	mongo *mongo.Database
 }
 
-func NewRepository(l *zap.Logger, m *mongo.Database) (repository.SynapsisRepository, error) {
+func NewRepository(l *zap.Logger, m *mongo.Database) (repository.UserRepository, error) {
 	if l == nil {
 		return nil, errors.New("logger is required")
 	}

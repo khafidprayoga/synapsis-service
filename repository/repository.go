@@ -5,7 +5,9 @@ import (
 	synapsisv1 "github.com/khafidprayoga/synapsis-service/gen/synapsis/v1"
 )
 
-type userRepository interface {
+// UserRepository
+// it use mongodb as data store
+type UserRepository interface {
 	CreateUser(_ context.Context, _ *synapsisv1.CreateUserRequest, isSeeder bool) (*synapsisv1.CreateUserResponse, error)
 	GetUserByEmail(_ context.Context, email string) (*synapsisv1.User, error)
 	GetUserById(_ context.Context, userId string) (*synapsisv1.User, error)
@@ -13,7 +15,9 @@ type userRepository interface {
 	UpdateUser(_ context.Context, user *synapsisv1.User) (*synapsisv1.User, error)
 }
 
-type productRepository interface {
+// ProductRepository
+// it use postgres as data store
+type ProductRepository interface {
 	//CreateProductCategory(_ context.Context, _ *synapsisv1.CreateProductCategoryRequest) (*synapsisv1.CreateProductCategoryResponse, error)
 	GetProductCategoryById(_ context.Context, categoryId ...string) ([]*synapsisv1.ProductCategory, error)
 	//GetProductCategories(_ context.Context) ([]*synapsisv1.ProductCategory, error)
@@ -29,9 +33,12 @@ type productRepository interface {
 	//GetProductRelations(_ context.Context, productId string) ([]*synapsisv1.ProductCategoryRelation, error)
 }
 
-type authRepository interface{}
+// AuthRepository
+// it use Auth0 from okta to issue token and manage the session
+type AuthRepository interface{}
 
 type SynapsisRepository interface {
-	userRepository
-	productRepository
+	UserRepository
+	ProductRepository
+	AuthRepository
 }

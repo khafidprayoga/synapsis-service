@@ -16,11 +16,7 @@ func (s synapsisService) CreateProduct(
 	request *synapsisv1.CreateProductRequest,
 ) (*synapsisv1.CreateProductResponse, error) {
 	{
-		errDetails := &epb.ErrorInfo{
-			Domain: "product",
-		}
 		st := status.New(codes.InvalidArgument, "invalid request for create product data")
-		_, e := st.WithDetails(errDetails)
 
 		nameProductErr := validation.Validate(
 			request.GetName(),
@@ -28,8 +24,11 @@ func (s synapsisService) CreateProduct(
 			validation.Length(3, 100),
 		)
 		if nameProductErr != nil {
-			errDetails.Reason = nameProductErr.Error()
-			return nil, e
+			formatted, _ := st.WithDetails(&epb.ErrorInfo{
+				Reason: nameProductErr.Error(),
+				Domain: "product.name",
+			})
+			return nil, formatted.Err()
 		}
 
 		descProductErr := validation.Validate(
@@ -37,13 +36,19 @@ func (s synapsisService) CreateProduct(
 			validation.Required,
 		)
 		if descProductErr != nil {
-			errDetails.Reason = descProductErr.Error()
-			return nil, e
+			formatted, _ := st.WithDetails(&epb.ErrorInfo{
+				Reason: descProductErr.Error(),
+				Domain: "product.description",
+			})
+			return nil, formatted.Err()
 		}
 
 		if request.GetPrice() <= 0 {
-			errDetails.Reason = "price must be greater than 0"
-			return nil, e
+			formatted, _ := st.WithDetails(&epb.ErrorInfo{
+				Reason: "price must be greater than 0",
+				Domain: "product.price",
+			})
+			return nil, formatted.Err()
 		}
 
 		productIdErr := validation.Validate(
@@ -53,8 +58,11 @@ func (s synapsisService) CreateProduct(
 		)
 
 		if productIdErr != nil {
-			errDetails.Reason = productIdErr.Error()
-			return nil, e
+			formatted, _ := st.WithDetails(&epb.ErrorInfo{
+				Reason: productIdErr.Error(),
+				Domain: "product.productCategoryIds",
+			})
+			return nil, formatted.Err()
 		}
 		request.ProductCategoryIds = lo.Uniq(request.GetProductCategoryIds())
 
@@ -64,11 +72,18 @@ func (s synapsisService) CreateProduct(
 	}
 
 	productCat, errGetProductCat := s.
-		repo.
+		productRepo.
 		GetProductCategoryById(ctx, request.GetProductCategoryIds()...)
 
 	if errGetProductCat != nil {
-		return nil, status.Errorf(codes.Internal, errGetProductCat.Error())
+		errDetails := &epb.ErrorInfo{
+			Reason:   errGetProductCat.Error(),
+			Domain:   "product.productCategoryIds",
+			Metadata: nil,
+		}
+		st := status.New(codes.Internal, "error get product category data")
+		formatted, _ := st.WithDetails(errDetails)
+		return nil, formatted.Err()
 	}
 
 	if len(productCat) == 0 {
@@ -82,7 +97,7 @@ func (s synapsisService) CreateProduct(
 		ProductCategories: productCat,
 	}
 
-	productData, errCreateProduct := s.repo.CreateProduct(ctx, product)
+	productData, errCreateProduct := s.productRepo.CreateProduct(ctx, product)
 	if errCreateProduct != nil {
 		errDetails := &epb.ErrorInfo{
 			Reason:   errCreateProduct.Error(),
@@ -90,8 +105,8 @@ func (s synapsisService) CreateProduct(
 			Metadata: nil,
 		}
 		st := status.New(codes.Internal, "error create product data")
-		_, e := st.WithDetails(errDetails)
-		return nil, e
+		formatted, _ := st.WithDetails(errDetails)
+		return nil, formatted.Err()
 	}
 
 	return productData, nil

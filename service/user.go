@@ -60,7 +60,7 @@ func (svc synapsisService) CreateUser(
 		}
 	}
 
-	existingUser, errGetExistingUser := svc.repo.GetUserByEmail(ctx, request.GetEmail())
+	existingUser, errGetExistingUser := svc.userRepo.GetUserByEmail(ctx, request.GetEmail())
 	if errGetExistingUser != nil {
 		return nil, status.Errorf(codes.Internal, errGetExistingUser.Error())
 	}
@@ -76,7 +76,7 @@ func (svc synapsisService) CreateUser(
 		return nil, e
 	}
 
-	return svc.repo.CreateUser(ctx, request, false)
+	return svc.userRepo.CreateUser(ctx, request, false)
 }
 
 func (s synapsisService) GetUserById(
@@ -90,7 +90,7 @@ func (s synapsisService) GetUserById(
 		}
 	}
 
-	userData, err := s.repo.GetUserById(ctx, request.GetId())
+	userData, err := s.userRepo.GetUserById(ctx, request.GetId())
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, err.Error())
 	}

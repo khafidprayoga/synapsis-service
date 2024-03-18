@@ -11,6 +11,8 @@ import (
 	commonConn "github.com/khafidprayoga/synapsis-service/common/conn"
 	synapsisv1 "github.com/khafidprayoga/synapsis-service/gen/synapsis/v1"
 	"github.com/khafidprayoga/synapsis-service/repository/mongoRepository"
+	"github.com/khafidprayoga/synapsis-service/repository/postgresRepository"
+	"github.com/khafidprayoga/synapsis-service/repository/redisRepository"
 	"github.com/khafidprayoga/synapsis-service/seed"
 	"github.com/khafidprayoga/synapsis-service/service"
 	"go.uber.org/zap"
@@ -70,10 +72,28 @@ func main() {
 	}
 	dbName := mongoClient.Database("synapsis")
 
-	mongoRep, errInitRepo := mongoRepository.NewRepository(log, dbName)
-	if errInitRepo != nil {
-		log.Fatal("failed to initialize repository", zap.Error(errInitRepo))
+	///// Repository
+	userRepo, errInitUserRepo := mongoRepository.NewRepository(log, dbName)
+	if errInitUserRepo != nil {
+		log.Fatal("failed to initialize user repository", zap.Error(errInitUserRepo))
 	}
+
+	productRepo, errInitProductRepo := postgresRepository.NewRepository(log, psqlDB)
+	if errInitProductRepo != nil {
+		log.Fatal("failed to initialize product repository", zap.Error(errInitProductRepo))
+	}
+
+	authRepo, errInitAuthRepo := redisRepository.NewRepository(log)
+	if errInitProductRepo != nil {
+		log.Fatal("failed to initialize auth repository", zap.Error(errInitAuthRepo))
+	}
+
+	repositoryDependency := service.ServiceRepository{
+		User:    userRepo,
+		Product: productRepo,
+		Auth:    authRepo,
+	}
+	///// Repository
 
 	if seedDataSource {
 		// seed to postgres data
@@ -94,7 +114,7 @@ func main() {
 			user := seed.NewUser()
 			log.Info("seeding user data")
 			for _, u := range user {
-				_, errInsert := mongoRep.CreateUser(context.Background(), &synapsisv1.CreateUserRequest{
+				_, errInsert := userRepo.CreateUser(context.Background(), &synapsisv1.CreateUserRequest{
 					FullName: u.GetFullName(),
 					Email:    u.GetEmail(),
 					Password: u.GetPassword(),
@@ -107,7 +127,7 @@ func main() {
 		}
 	}
 
-	handler := service.NewSynapsisService(log, mongoRep)
+	handler := service.NewSynapsisService(log, repositoryDependency)
 
 	listen, err := net.Listen("tcp", fmt.Sprintf(":%v", rpcPort))
 	if err != nil {

@@ -35,7 +35,7 @@ func PostgresConnect() (*gorm.DB, error) {
 		AllowGlobalUpdate:                        false,
 		QueryFields:                              false,
 		CreateBatchSize:                          0,
-		TranslateError:                           false,
+		TranslateError:                           true,
 		ClauseBuilders:                           nil,
 		ConnPool:                                 nil,
 		Dialector:                                nil,

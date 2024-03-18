@@ -9,8 +9,10 @@ import (
 )
 
 type synapsisService struct {
-	log  *zap.Logger
-	repo repository.SynapsisRepository
+	log         *zap.Logger
+	userRepo    repository.UserRepository
+	productRepo repository.ProductRepository
+	authRepo    repository.AuthRepository
 	synapsisv1.UnimplementedSynapsisServiceServer
 }
 
@@ -18,11 +20,20 @@ func (s synapsisService) Ping(_ context.Context, _ *emptypb.Empty) (*synapsisv1.
 	return &synapsisv1.PingResponse{Message: "pong"}, nil
 }
 
+type ServiceRepository struct {
+	User    repository.UserRepository
+	Product repository.ProductRepository
+	Auth    repository.AuthRepository
+}
+
 func NewSynapsisService(
 	l *zap.Logger,
-	repo repository.SynapsisRepository) synapsisv1.SynapsisServiceServer {
+	serviceRepo ServiceRepository,
+) synapsisv1.SynapsisServiceServer {
 	return &synapsisService{
-		log:  l,
-		repo: repo,
+		log:         l,
+		userRepo:    serviceRepo.User,
+		productRepo: serviceRepo.Product,
+		authRepo:    serviceRepo.Auth,
 	}
 }
