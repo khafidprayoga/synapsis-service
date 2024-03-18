@@ -83,6 +83,23 @@ func (s synapsisService) GetUserById(
 	ctx context.Context,
 	request *synapsisv1.GetUserByIdRequest,
 ) (*synapsisv1.GetUserByIdResponse, error) {
-	//TODO implement me
-	panic("implement me")
+	{
+		idReqErr := validation.Validate(request.GetId(), validation.Required)
+		if idReqErr != nil {
+			return nil, status.Errorf(codes.InvalidArgument, "invalid id: %v", idReqErr)
+		}
+	}
+
+	userData, err := s.repo.GetUserById(ctx, request.GetId())
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, err.Error())
+	}
+
+	if userData == nil && err == nil {
+		return nil, status.Errorf(codes.NotFound, "user not found")
+	}
+
+	return &synapsisv1.GetUserByIdResponse{
+		User: userData,
+	}, nil
 }

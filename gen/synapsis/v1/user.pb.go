@@ -26,15 +26,15 @@ type User struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id       string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`                                 // @gotags: bson:"id"
-	FullName string                 `protobuf:"bytes,2,opt,name=fullName,proto3" json:"fullName,omitempty"`                     // @gotags: bson:"full_name"
-	Email    string                 `protobuf:"bytes,3,opt,name=email,proto3" json:"email,omitempty"`                           // @gotags: bson:"email"
-	Password string                 `protobuf:"bytes,4,opt,name=password,proto3" json:"password,omitempty"`                     // @gotags: bson:"password"
-	Dob      *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=dob,proto3" json:"dob,omitempty"`                               // @gotags: bson:"dob"
-	Address  string                 `protobuf:"bytes,6,opt,name=address,proto3" json:"address,omitempty"`                       // @gotags: bson:"address"
-	FullTelp string                 `protobuf:"bytes,7,opt,name=fullTelp,proto3" json:"fullTelp,omitempty"`                     // @gotags: bson:"full_telp"
-	Role     UserRole               `protobuf:"varint,90,opt,name=role,proto3,enum=synapsis.v1.UserRole" json:"role,omitempty"` // @gotags: bson:"role"
-	Dt       *DT                    `protobuf:"bytes,99,opt,name=dt,proto3" json:"dt,omitempty"`                                // @gotags: bson:"dt"
+	Id       string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" bson:"id"`
+	FullName string                 `protobuf:"bytes,2,opt,name=fullName,proto3" json:"fullName,omitempty" bson:"full_name"`
+	Email    string                 `protobuf:"bytes,3,opt,name=email,proto3" json:"email,omitempty" bson:"email"`
+	Password string                 `protobuf:"bytes,4,opt,name=password,proto3" json:"password,omitempty" bson:"password"`
+	Dob      *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=dob,proto3" json:"dob,omitempty" bson:"dob"`
+	Address  string                 `protobuf:"bytes,6,opt,name=address,proto3" json:"address,omitempty" bson:"address"`
+	FullTelp string                 `protobuf:"bytes,7,opt,name=fullTelp,proto3" json:"fullTelp,omitempty" bson:"full_telp"`
+	Role     UserRole               `protobuf:"varint,90,opt,name=role,proto3,enum=synapsis.v1.UserRole" json:"role,omitempty" bson:"role"`
+	Dt       *DT                    `protobuf:"bytes,99,opt,name=dt,proto3" json:"dt,omitempty" bson:"dt"`
 }
 
 func (x *User) Reset() {

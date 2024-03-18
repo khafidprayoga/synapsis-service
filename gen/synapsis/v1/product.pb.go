@@ -25,15 +25,15 @@ type Product struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id                string             `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`                                // @gotags: gorm:"primaryKey;type:uuid;default:uuid_generate_v4()"
-	Name              string             `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`                            // @gotags: gorm:"type:varchar(255)"
-	Description       string             `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`              // @gotags: gorm:"type:text"
-	Price             float64            `protobuf:"fixed64,5,opt,name=price,proto3" json:"price,omitempty"`                        // @gotags: gorm:"type:decimal(10,2)"
-	ImageId           string             `protobuf:"bytes,6,opt,name=imageId,proto3" json:"imageId,omitempty"`                      // @gotags: gorm:"type:text" bson:"image_id"`
-	CreatedAt         int64              `protobuf:"varint,99,opt,name=createdAt,proto3" json:"createdAt,omitempty"`                // @gotags: gorm:"autoCreateTime:milli;INDEX" bson:"-"
-	UpdatedAt         int64              `protobuf:"varint,100,opt,name=updatedAt,proto3" json:"updatedAt,omitempty"`               // @gotags: gorm:"autoUpdateTime:milli;INDEX" bson:"-"
-	ProductCategories []*ProductCategory `protobuf:"bytes,90,rep,name=productCategories,proto3" json:"productCategories,omitempty"` // @gotags: gorm:"-" bson:"product_categories"`
-	Qty               float64            `protobuf:"fixed64,91,opt,name=qty,proto3" json:"qty,omitempty"`                           // @gotags: gorm:"-" bson:"qty"`
+	Id                string             `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" gorm:"primaryKey;type:uuid;default:uuid_generate_v4()"`
+	Name              string             `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty" gorm:"type:varchar(255)"`
+	Description       string             `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty" gorm:"type:text"`
+	Price             float64            `protobuf:"fixed64,5,opt,name=price,proto3" json:"price,omitempty" gorm:"type:decimal(10,2)"`
+	ImageId           string             `protobuf:"bytes,6,opt,name=imageId,proto3" json:"imageId,omitempty" gorm:"type:text" bson:"image_id"`
+	CreatedAt         int64              `protobuf:"varint,99,opt,name=createdAt,proto3" json:"createdAt,omitempty" gorm:"autoCreateTime:milli;INDEX" bson:"-"`
+	UpdatedAt         int64              `protobuf:"varint,100,opt,name=updatedAt,proto3" json:"updatedAt,omitempty" gorm:"autoUpdateTime:milli;INDEX" bson:"-"`
+	ProductCategories []*ProductCategory `protobuf:"bytes,90,rep,name=productCategories,proto3" json:"productCategories,omitempty" gorm:"-:all" bson:"product_categories"`
+	Qty               float64            `protobuf:"fixed64,91,opt,name=qty,proto3" json:"qty,omitempty" gorm:"-:all" bson:"qty"`
 }
 
 func (x *Product) Reset() {
@@ -136,9 +136,9 @@ type ProductCategoryRelation struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id                string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`                               // @gotags: gorm:"primaryKey;type:uuid;default:uuid_generate_v4()"
-	ProductId         string `protobuf:"bytes,2,opt,name=productId,proto3" json:"productId,omitempty"`                 // @gotags: gorm:"type:varchar(255);INDEX"
-	ProductCategoryId string `protobuf:"bytes,3,opt,name=productCategoryId,proto3" json:"productCategoryId,omitempty"` // @gotags: gorm:"type:varchar(255);INDEX"
+	Id                string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" gorm:"primaryKey;type:uuid;default:uuid_generate_v4()"`
+	ProductId         string `protobuf:"bytes,2,opt,name=productId,proto3" json:"productId,omitempty" gorm:"type:varchar(255);INDEX"`
+	ProductCategoryId string `protobuf:"bytes,3,opt,name=productCategoryId,proto3" json:"productCategoryId,omitempty" gorm:"type:varchar(255);INDEX"`
 }
 
 func (x *ProductCategoryRelation) Reset() {

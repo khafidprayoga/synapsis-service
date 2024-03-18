@@ -175,10 +175,10 @@ type TransactionPaymentData struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	QrisCode string                 `protobuf:"bytes,1,opt,name=qrisCode,proto3" json:"qrisCode,omitempty"` // @gotags: bson:"qris_code"
+	QrisCode string                 `protobuf:"bytes,1,opt,name=qrisCode,proto3" json:"qrisCode,omitempty" bson:"qris_code"`
 	Amount   float64                `protobuf:"fixed64,2,opt,name=amount,proto3" json:"amount,omitempty"`
-	IssuedAt *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=issuedAt,proto3" json:"issuedAt,omitempty"` // @gotags: bson:"issued_at"
-	PaidAt   *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=paidAt,proto3" json:"paidAt,omitempty"`     // @gotags: bson:"paid_at"
+	IssuedAt *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=issuedAt,proto3" json:"issuedAt,omitempty" bson:"issued_at"`
+	PaidAt   *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=paidAt,proto3" json:"paidAt,omitempty" bson:"paid_at"`
 }
 
 func (x *TransactionPaymentData) Reset() {

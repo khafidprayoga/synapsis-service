@@ -58,6 +58,8 @@ func main() {
 		log.Info("migrating postgres schema")
 		psqlDBDebug.AutoMigrate(
 			&synapsisv1.ProductCategory{},
+			&synapsisv1.Product{},
+			&synapsisv1.ProductCategoryRelation{},
 		)
 	}
 

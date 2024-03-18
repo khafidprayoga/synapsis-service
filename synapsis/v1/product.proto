@@ -14,8 +14,8 @@ message Product {
   string imageId = 6; // @gotags: gorm:"type:text" bson:"image_id"`
   int64 createdAt = 99; // @gotags: gorm:"autoCreateTime:milli;INDEX" bson:"-"
   int64 updatedAt = 100; // @gotags: gorm:"autoUpdateTime:milli;INDEX" bson:"-"
-  repeated ProductCategory productCategories = 90; // @gotags: gorm:"-" bson:"product_categories"`
-  double qty = 91; // @gotags: gorm:"-" bson:"qty"`
+  repeated ProductCategory productCategories = 90; // @gotags: gorm:"-:all" bson:"product_categories"`
+  double qty = 91; // @gotags: gorm:"-:all" bson:"qty"`
 }
 
 message ProductCategoryRelation {
