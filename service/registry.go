@@ -18,7 +18,9 @@ func (s synapsisService) Ping(_ context.Context, _ *emptypb.Empty) (*synapsisv1.
 	return &synapsisv1.PingResponse{Message: "pong"}, nil
 }
 
-func NewSynapsisService(l *zap.Logger, repo repository.SynapsisRepository) synapsisv1.SynapsisServiceServer {
+func NewSynapsisService(
+	l *zap.Logger,
+	repo repository.SynapsisRepository) synapsisv1.SynapsisServiceServer {
 	return &synapsisService{
 		log:  l,
 		repo: repo,

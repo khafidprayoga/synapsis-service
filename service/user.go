@@ -78,3 +78,11 @@ func (svc synapsisService) CreateUser(
 
 	return svc.repo.CreateUser(ctx, request, false)
 }
+
+func (s synapsisService) GetUserById(
+	ctx context.Context,
+	request *synapsisv1.GetUserByIdRequest,
+) (*synapsisv1.GetUserByIdResponse, error) {
+	//TODO implement me
+	panic("implement me")
+}
