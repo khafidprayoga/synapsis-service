@@ -10,6 +10,7 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.11.3
 	github.com/joho/godotenv v1.5.1
+	github.com/pilagod/gorm-cursor-paginator/v2 v2.4.2
 	go.mongodb.org/mongo-driver v1.14.0
 	go.uber.org/zap v1.18.1
 	golang.org/x/crypto v0.21.0
