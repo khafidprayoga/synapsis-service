@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package synapsis.v1;
+
+option  go_package = "github.com/khafidprayoga/synapsis-service/v1;synapsisv1";
+import "synapsis/v1/common.proto";
+import "synapsis/v1/product_category.proto";
+
+message Product {
+  string id = 1; // @gotags: gorm:"primaryKey;type:uuid;default:uuid_generate_v4()"
+  string name = 2; // @gotags: gorm:"type:varchar(255)"
+  string description = 4; // @gotags: gorm:"type:text"
+  int64 createdAt = 99; // @gotags: gorm:"autoCreateTime:milli;INDEX"
+  int64 updatedAt = 100; // @gotags: gorm:"autoUpdateTime:milli;INDEX"
+  repeated ProductCategory productCategories = 5; // @gotags: gorm:"-"
+}
+
+message ProductCategoryRelation {
+  string id = 1; // @gotags: gorm:"primaryKey;type:uuid;default:uuid_generate_v4()"
+  string productId = 2; // @gotags: gorm:"type:varchar(255);INDEX"
+  string productCategoryId = 3; // @gotags: gorm:"type:varchar(255);INDEX"
+}
+
+// Service
+message CreateProductRequest{
+  string name = 1;
+  string description = 2;
+  repeated string productCategoryIds = 3;
+}
+
+message CreateProductResponse{
+  Product product = 1;
+}
+
+message GetProductByIdRequest{
+  string id = 1;
+}
+
+message GetProductByIdResponse{
+  Product product = 1;
+}
+
+message GetProductsRequest{
+  Pagination pagination = 1;
+}
+
+message GetProductsResponse{
+  repeated Product products = 1;
+  Pagination pagination = 2;
+}
+
+message UpdateProductRequest{
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  repeated string productCategoryIds = 4;
+}
+
+message UpdateProductResponse{
+  Product product = 1;
+}
+
+message DeleteProductRequest{
+  string id = 1;
+}

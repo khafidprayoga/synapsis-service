@@ -7,6 +7,7 @@ import "google/protobuf/empty.proto";
 
 import "synapsis/v1/user.proto";
 import "synapsis/v1/product_category.proto";
+import "synapsis/v1/product.proto";
 import "synapsis/v1/auth.proto";
 
 message PingResponse{
@@ -36,5 +37,12 @@ service SynapsisService {
   rpc GetProductCategories(synapsis.v1.GetProductCategoriesRequest) returns (synapsis.v1.GetProductCategoriesResponse);
   // Product Category
 
+  // Product
+  rpc CreateProduct(synapsis.v1.CreateProductRequest) returns (synapsis.v1.CreateProductResponse);
+  rpc GetProductById(synapsis.v1.GetProductByIdRequest) returns (synapsis.v1.GetProductByIdResponse);
+  rpc UpdateProduct(synapsis.v1.UpdateProductRequest) returns (synapsis.v1.GetProductByIdResponse);
+  rpc DeleteProduct(synapsis.v1.DeleteProductRequest) returns (google.protobuf.Empty);
+  rpc GetProducts(synapsis.v1.GetProductsRequest) returns (synapsis.v1.GetProductsResponse);
+  // Product
 
 }

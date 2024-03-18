@@ -32,6 +32,11 @@ const (
 	SynapsisService_UpdateProductCategory_FullMethodName = "/synapsis.v1.SynapsisService/UpdateProductCategory"
 	SynapsisService_DeleteProductCategory_FullMethodName = "/synapsis.v1.SynapsisService/DeleteProductCategory"
 	SynapsisService_GetProductCategories_FullMethodName  = "/synapsis.v1.SynapsisService/GetProductCategories"
+	SynapsisService_CreateProduct_FullMethodName         = "/synapsis.v1.SynapsisService/CreateProduct"
+	SynapsisService_GetProductById_FullMethodName        = "/synapsis.v1.SynapsisService/GetProductById"
+	SynapsisService_UpdateProduct_FullMethodName         = "/synapsis.v1.SynapsisService/UpdateProduct"
+	SynapsisService_DeleteProduct_FullMethodName         = "/synapsis.v1.SynapsisService/DeleteProduct"
+	SynapsisService_GetProducts_FullMethodName           = "/synapsis.v1.SynapsisService/GetProducts"
 )
 
 // SynapsisServiceClient is the client API for SynapsisService service.
@@ -53,6 +58,12 @@ type SynapsisServiceClient interface {
 	UpdateProductCategory(ctx context.Context, in *UpdateProductCategoryRequest, opts ...grpc.CallOption) (*GetProductCategoryResponse, error)
 	DeleteProductCategory(ctx context.Context, in *DeleteProductCategoryRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	GetProductCategories(ctx context.Context, in *GetProductCategoriesRequest, opts ...grpc.CallOption) (*GetProductCategoriesResponse, error)
+	// Product
+	CreateProduct(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*CreateProductResponse, error)
+	GetProductById(ctx context.Context, in *GetProductByIdRequest, opts ...grpc.CallOption) (*GetProductByIdResponse, error)
+	UpdateProduct(ctx context.Context, in *UpdateProductRequest, opts ...grpc.CallOption) (*GetProductByIdResponse, error)
+	DeleteProduct(ctx context.Context, in *DeleteProductRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	GetProducts(ctx context.Context, in *GetProductsRequest, opts ...grpc.CallOption) (*GetProductsResponse, error)
 }
 
 type synapsisServiceClient struct {
@@ -171,6 +182,51 @@ func (c *synapsisServiceClient) GetProductCategories(ctx context.Context, in *Ge
 	return out, nil
 }
 
+func (c *synapsisServiceClient) CreateProduct(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*CreateProductResponse, error) {
+	out := new(CreateProductResponse)
+	err := c.cc.Invoke(ctx, SynapsisService_CreateProduct_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *synapsisServiceClient) GetProductById(ctx context.Context, in *GetProductByIdRequest, opts ...grpc.CallOption) (*GetProductByIdResponse, error) {
+	out := new(GetProductByIdResponse)
+	err := c.cc.Invoke(ctx, SynapsisService_GetProductById_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *synapsisServiceClient) UpdateProduct(ctx context.Context, in *UpdateProductRequest, opts ...grpc.CallOption) (*GetProductByIdResponse, error) {
+	out := new(GetProductByIdResponse)
+	err := c.cc.Invoke(ctx, SynapsisService_UpdateProduct_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *synapsisServiceClient) DeleteProduct(ctx context.Context, in *DeleteProductRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, SynapsisService_DeleteProduct_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *synapsisServiceClient) GetProducts(ctx context.Context, in *GetProductsRequest, opts ...grpc.CallOption) (*GetProductsResponse, error) {
+	out := new(GetProductsResponse)
+	err := c.cc.Invoke(ctx, SynapsisService_GetProducts_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // SynapsisServiceServer is the server API for SynapsisService service.
 // All implementations must embed UnimplementedSynapsisServiceServer
 // for forward compatibility
@@ -190,6 +246,12 @@ type SynapsisServiceServer interface {
 	UpdateProductCategory(context.Context, *UpdateProductCategoryRequest) (*GetProductCategoryResponse, error)
 	DeleteProductCategory(context.Context, *DeleteProductCategoryRequest) (*emptypb.Empty, error)
 	GetProductCategories(context.Context, *GetProductCategoriesRequest) (*GetProductCategoriesResponse, error)
+	// Product
+	CreateProduct(context.Context, *CreateProductRequest) (*CreateProductResponse, error)
+	GetProductById(context.Context, *GetProductByIdRequest) (*GetProductByIdResponse, error)
+	UpdateProduct(context.Context, *UpdateProductRequest) (*GetProductByIdResponse, error)
+	DeleteProduct(context.Context, *DeleteProductRequest) (*emptypb.Empty, error)
+	GetProducts(context.Context, *GetProductsRequest) (*GetProductsResponse, error)
 	mustEmbedUnimplementedSynapsisServiceServer()
 }
 
@@ -232,6 +294,21 @@ func (UnimplementedSynapsisServiceServer) DeleteProductCategory(context.Context,
 }
 func (UnimplementedSynapsisServiceServer) GetProductCategories(context.Context, *GetProductCategoriesRequest) (*GetProductCategoriesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProductCategories not implemented")
+}
+func (UnimplementedSynapsisServiceServer) CreateProduct(context.Context, *CreateProductRequest) (*CreateProductResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateProduct not implemented")
+}
+func (UnimplementedSynapsisServiceServer) GetProductById(context.Context, *GetProductByIdRequest) (*GetProductByIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProductById not implemented")
+}
+func (UnimplementedSynapsisServiceServer) UpdateProduct(context.Context, *UpdateProductRequest) (*GetProductByIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateProduct not implemented")
+}
+func (UnimplementedSynapsisServiceServer) DeleteProduct(context.Context, *DeleteProductRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteProduct not implemented")
+}
+func (UnimplementedSynapsisServiceServer) GetProducts(context.Context, *GetProductsRequest) (*GetProductsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProducts not implemented")
 }
 func (UnimplementedSynapsisServiceServer) mustEmbedUnimplementedSynapsisServiceServer() {}
 
@@ -462,6 +539,96 @@ func _SynapsisService_GetProductCategories_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
+func _SynapsisService_CreateProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateProductRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SynapsisServiceServer).CreateProduct(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SynapsisService_CreateProduct_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SynapsisServiceServer).CreateProduct(ctx, req.(*CreateProductRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SynapsisService_GetProductById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetProductByIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SynapsisServiceServer).GetProductById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SynapsisService_GetProductById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SynapsisServiceServer).GetProductById(ctx, req.(*GetProductByIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SynapsisService_UpdateProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateProductRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SynapsisServiceServer).UpdateProduct(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SynapsisService_UpdateProduct_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SynapsisServiceServer).UpdateProduct(ctx, req.(*UpdateProductRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SynapsisService_DeleteProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteProductRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SynapsisServiceServer).DeleteProduct(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SynapsisService_DeleteProduct_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SynapsisServiceServer).DeleteProduct(ctx, req.(*DeleteProductRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SynapsisService_GetProducts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetProductsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SynapsisServiceServer).GetProducts(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SynapsisService_GetProducts_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SynapsisServiceServer).GetProducts(ctx, req.(*GetProductsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // SynapsisService_ServiceDesc is the grpc.ServiceDesc for SynapsisService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -516,6 +683,26 @@ var SynapsisService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetProductCategories",
 			Handler:    _SynapsisService_GetProductCategories_Handler,
+		},
+		{
+			MethodName: "CreateProduct",
+			Handler:    _SynapsisService_CreateProduct_Handler,
+		},
+		{
+			MethodName: "GetProductById",
+			Handler:    _SynapsisService_GetProductById_Handler,
+		},
+		{
+			MethodName: "UpdateProduct",
+			Handler:    _SynapsisService_UpdateProduct_Handler,
+		},
+		{
+			MethodName: "DeleteProduct",
+			Handler:    _SynapsisService_DeleteProduct_Handler,
+		},
+		{
+			MethodName: "GetProducts",
+			Handler:    _SynapsisService_GetProducts_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
