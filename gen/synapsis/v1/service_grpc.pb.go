@@ -37,6 +37,10 @@ const (
 	SynapsisService_UpdateProduct_FullMethodName         = "/synapsis.v1.SynapsisService/UpdateProduct"
 	SynapsisService_DeleteProduct_FullMethodName         = "/synapsis.v1.SynapsisService/DeleteProduct"
 	SynapsisService_GetProducts_FullMethodName           = "/synapsis.v1.SynapsisService/GetProducts"
+	SynapsisService_CreateTransaction_FullMethodName     = "/synapsis.v1.SynapsisService/CreateTransaction"
+	SynapsisService_GetTransactionById_FullMethodName    = "/synapsis.v1.SynapsisService/GetTransactionById"
+	SynapsisService_UpdateTransaction_FullMethodName     = "/synapsis.v1.SynapsisService/UpdateTransaction"
+	SynapsisService_GetTransactions_FullMethodName       = "/synapsis.v1.SynapsisService/GetTransactions"
 )
 
 // SynapsisServiceClient is the client API for SynapsisService service.
@@ -64,6 +68,11 @@ type SynapsisServiceClient interface {
 	UpdateProduct(ctx context.Context, in *UpdateProductRequest, opts ...grpc.CallOption) (*GetProductByIdResponse, error)
 	DeleteProduct(ctx context.Context, in *DeleteProductRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	GetProducts(ctx context.Context, in *GetProductsRequest, opts ...grpc.CallOption) (*GetProductsResponse, error)
+	// Transaction
+	CreateTransaction(ctx context.Context, in *CreateTransactionRequest, opts ...grpc.CallOption) (*CreateTransactionResponse, error)
+	GetTransactionById(ctx context.Context, in *GetTransactionByIdRequest, opts ...grpc.CallOption) (*GetTransactionByIdResponse, error)
+	UpdateTransaction(ctx context.Context, in *UpdateTransactionRequest, opts ...grpc.CallOption) (*GetTransactionByIdResponse, error)
+	GetTransactions(ctx context.Context, in *GetTransactionsRequest, opts ...grpc.CallOption) (*GetTransactionsResponse, error)
 }
 
 type synapsisServiceClient struct {
@@ -227,6 +236,42 @@ func (c *synapsisServiceClient) GetProducts(ctx context.Context, in *GetProducts
 	return out, nil
 }
 
+func (c *synapsisServiceClient) CreateTransaction(ctx context.Context, in *CreateTransactionRequest, opts ...grpc.CallOption) (*CreateTransactionResponse, error) {
+	out := new(CreateTransactionResponse)
+	err := c.cc.Invoke(ctx, SynapsisService_CreateTransaction_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *synapsisServiceClient) GetTransactionById(ctx context.Context, in *GetTransactionByIdRequest, opts ...grpc.CallOption) (*GetTransactionByIdResponse, error) {
+	out := new(GetTransactionByIdResponse)
+	err := c.cc.Invoke(ctx, SynapsisService_GetTransactionById_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *synapsisServiceClient) UpdateTransaction(ctx context.Context, in *UpdateTransactionRequest, opts ...grpc.CallOption) (*GetTransactionByIdResponse, error) {
+	out := new(GetTransactionByIdResponse)
+	err := c.cc.Invoke(ctx, SynapsisService_UpdateTransaction_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *synapsisServiceClient) GetTransactions(ctx context.Context, in *GetTransactionsRequest, opts ...grpc.CallOption) (*GetTransactionsResponse, error) {
+	out := new(GetTransactionsResponse)
+	err := c.cc.Invoke(ctx, SynapsisService_GetTransactions_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // SynapsisServiceServer is the server API for SynapsisService service.
 // All implementations must embed UnimplementedSynapsisServiceServer
 // for forward compatibility
@@ -252,6 +297,11 @@ type SynapsisServiceServer interface {
 	UpdateProduct(context.Context, *UpdateProductRequest) (*GetProductByIdResponse, error)
 	DeleteProduct(context.Context, *DeleteProductRequest) (*emptypb.Empty, error)
 	GetProducts(context.Context, *GetProductsRequest) (*GetProductsResponse, error)
+	// Transaction
+	CreateTransaction(context.Context, *CreateTransactionRequest) (*CreateTransactionResponse, error)
+	GetTransactionById(context.Context, *GetTransactionByIdRequest) (*GetTransactionByIdResponse, error)
+	UpdateTransaction(context.Context, *UpdateTransactionRequest) (*GetTransactionByIdResponse, error)
+	GetTransactions(context.Context, *GetTransactionsRequest) (*GetTransactionsResponse, error)
 	mustEmbedUnimplementedSynapsisServiceServer()
 }
 
@@ -309,6 +359,18 @@ func (UnimplementedSynapsisServiceServer) DeleteProduct(context.Context, *Delete
 }
 func (UnimplementedSynapsisServiceServer) GetProducts(context.Context, *GetProductsRequest) (*GetProductsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProducts not implemented")
+}
+func (UnimplementedSynapsisServiceServer) CreateTransaction(context.Context, *CreateTransactionRequest) (*CreateTransactionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateTransaction not implemented")
+}
+func (UnimplementedSynapsisServiceServer) GetTransactionById(context.Context, *GetTransactionByIdRequest) (*GetTransactionByIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTransactionById not implemented")
+}
+func (UnimplementedSynapsisServiceServer) UpdateTransaction(context.Context, *UpdateTransactionRequest) (*GetTransactionByIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateTransaction not implemented")
+}
+func (UnimplementedSynapsisServiceServer) GetTransactions(context.Context, *GetTransactionsRequest) (*GetTransactionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTransactions not implemented")
 }
 func (UnimplementedSynapsisServiceServer) mustEmbedUnimplementedSynapsisServiceServer() {}
 
@@ -629,6 +691,78 @@ func _SynapsisService_GetProducts_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _SynapsisService_CreateTransaction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateTransactionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SynapsisServiceServer).CreateTransaction(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SynapsisService_CreateTransaction_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SynapsisServiceServer).CreateTransaction(ctx, req.(*CreateTransactionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SynapsisService_GetTransactionById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTransactionByIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SynapsisServiceServer).GetTransactionById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SynapsisService_GetTransactionById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SynapsisServiceServer).GetTransactionById(ctx, req.(*GetTransactionByIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SynapsisService_UpdateTransaction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateTransactionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SynapsisServiceServer).UpdateTransaction(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SynapsisService_UpdateTransaction_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SynapsisServiceServer).UpdateTransaction(ctx, req.(*UpdateTransactionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SynapsisService_GetTransactions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTransactionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SynapsisServiceServer).GetTransactions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SynapsisService_GetTransactions_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SynapsisServiceServer).GetTransactions(ctx, req.(*GetTransactionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // SynapsisService_ServiceDesc is the grpc.ServiceDesc for SynapsisService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -703,6 +837,22 @@ var SynapsisService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetProducts",
 			Handler:    _SynapsisService_GetProducts_Handler,
+		},
+		{
+			MethodName: "CreateTransaction",
+			Handler:    _SynapsisService_CreateTransaction_Handler,
+		},
+		{
+			MethodName: "GetTransactionById",
+			Handler:    _SynapsisService_GetTransactionById_Handler,
+		},
+		{
+			MethodName: "UpdateTransaction",
+			Handler:    _SynapsisService_UpdateTransaction_Handler,
+		},
+		{
+			MethodName: "GetTransactions",
+			Handler:    _SynapsisService_GetTransactions_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

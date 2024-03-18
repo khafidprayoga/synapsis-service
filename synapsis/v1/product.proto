@@ -10,9 +10,12 @@ message Product {
   string id = 1; // @gotags: gorm:"primaryKey;type:uuid;default:uuid_generate_v4()"
   string name = 2; // @gotags: gorm:"type:varchar(255)"
   string description = 4; // @gotags: gorm:"type:text"
-  int64 createdAt = 99; // @gotags: gorm:"autoCreateTime:milli;INDEX"
-  int64 updatedAt = 100; // @gotags: gorm:"autoUpdateTime:milli;INDEX"
-  repeated ProductCategory productCategories = 5; // @gotags: gorm:"-"
+  double price = 5; // @gotags: gorm:"type:decimal(10,2)"
+  string imageId = 6; // @gotags: gorm:"type:text" bson:"image_id"`
+  int64 createdAt = 99; // @gotags: gorm:"autoCreateTime:milli;INDEX" bson:"-"
+  int64 updatedAt = 100; // @gotags: gorm:"autoUpdateTime:milli;INDEX" bson:"-"
+  repeated ProductCategory productCategories = 90; // @gotags: gorm:"-" bson:"product_categories"`
+  double qty = 91; // @gotags: gorm:"-" bson:"qty"`
 }
 
 message ProductCategoryRelation {

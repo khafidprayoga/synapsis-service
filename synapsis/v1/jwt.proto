@@ -4,9 +4,15 @@ package synapsis.v1;
 
 option  go_package = "github.com/khafidprayoga/synapsis-service/v1;synapsisv1";
 
+enum UserRole {
+  ADMIN = 0;
+  REGULAR = 1;
+}
+
 message Claims {
   string iss = 1;
   string uid = 2;
   int64 iat = 3;
   int64 exp = 4;
+  int32 rl = 99; // role
 }

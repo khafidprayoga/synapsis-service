@@ -3,8 +3,10 @@ syntax = "proto3";
 package synapsis.v1;
 
 option  go_package = "github.com/khafidprayoga/synapsis-service/v1;synapsisv1";
+
 import "google/protobuf/timestamp.proto";
 import "synapsis/v1/common.proto";
+import "synapsis/v1/jwt.proto";
 
 message User{
     string id = 1; // @gotags: bson:"id"
@@ -12,7 +14,10 @@ message User{
     string email = 3; // @gotags: bson:"email"
     string password = 4; // @gotags: bson:"password"
     google.protobuf.Timestamp dob = 5; // @gotags: bson:"dob"
-    synapsis.v1.DT dt = 6; // @gotags: bson:"dt"
+    string address = 6; // @gotags: bson:"address"
+    string fullTelp = 7; // @gotags: bson:"full_telp"
+    UserRole role = 90; // @gotags: bson:"role"
+    synapsis.v1.DT dt = 99; // @gotags: bson:"dt"
 }
 
 // ======== Service ========

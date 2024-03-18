@@ -6,9 +6,10 @@ option  go_package = "github.com/khafidprayoga/synapsis-service/v1;synapsisv1";
 import "google/protobuf/empty.proto";
 
 import "synapsis/v1/user.proto";
+import "synapsis/v1/auth.proto";
 import "synapsis/v1/product_category.proto";
 import "synapsis/v1/product.proto";
-import "synapsis/v1/auth.proto";
+import "synapsis/v1/transaction.proto";
 
 message PingResponse{
   string message = 1;
@@ -45,4 +46,10 @@ service SynapsisService {
   rpc GetProducts(synapsis.v1.GetProductsRequest) returns (synapsis.v1.GetProductsResponse);
   // Product
 
+  // Transaction
+  rpc CreateTransaction(synapsis.v1.CreateTransactionRequest) returns (synapsis.v1.CreateTransactionResponse);
+  rpc GetTransactionById(synapsis.v1.GetTransactionByIdRequest) returns (synapsis.v1.GetTransactionByIdResponse);
+  rpc UpdateTransaction(synapsis.v1.UpdateTransactionRequest) returns (synapsis.v1.GetTransactionByIdResponse);
+  rpc GetTransactions(synapsis.v1.GetTransactionsRequest) returns (synapsis.v1.GetTransactionsResponse);
+  // Transaction
 }

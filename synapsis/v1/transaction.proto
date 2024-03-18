@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package synapsis.v1;
+
+option  go_package = "github.com/khafidprayoga/synapsis-service/v1;synapsisv1";
+
+import "google/protobuf/timestamp.proto";
+import "synapsis/v1/common.proto";
+import "synapsis/v1/product.proto";
+import "synapsis/v1/user.proto";
+
+// Transaction
+// index: product.id, user.id, dt.created_at, state
+message Transaction {
+  string id = 1;
+  User user = 2;
+  repeated Product products = 3;
+  TransactionPaymentData payment = 6;
+  double total = 7;
+  TransactionState state = 5;
+  DT dt = 99;
+}
+
+enum TransactionState {
+  TRANSACTION_STATE_UNSPECIFIED = 0;
+  TRANSACTION_STATE_CART = 1;
+  TRANSACTION_STATE_PROCESS = 2;
+  TRANSACTION_STATE_PAID = 3;
+}
+
+message TransactionPaymentData{
+  string qrisCode = 1; // @gotags: bson:"qris_code"
+  double amount = 2;
+  google.protobuf.Timestamp issuedAt = 3; // @gotags: bson:"issued_at"
+  google.protobuf.Timestamp paidAt = 4; // @gotags: bson:"paid_at"
+}
+
+message CreateTransactionRequest {
+  string requestId = 1;
+  User user = 2;
+  repeated Product products = 3;
+}
+
+message CreateTransactionResponse {
+  Transaction transaction = 2;
+}
+
+message GetTransactionByIdRequest {
+  string id = 1;
+}
+
+message GetTransactionByIdResponse {
+  Transaction transaction = 2;
+}
+
+message GetTransactionsRequest {
+  repeated string userId = 1;
+  repeated string productId = 2;
+  repeated TransactionState state = 3;
+  Pagination pagination = 4;
+}
+
+message GetTransactionsResponse {
+  repeated Transaction transactions = 1;
+  Pagination pagination = 2;
+}
+
+message UpdateTransactionRequest {
+  Transaction transaction = 2;
+}

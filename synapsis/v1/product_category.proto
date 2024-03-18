@@ -9,8 +9,8 @@ message ProductCategory{
     string id = 1; // @gotags: gorm:"primaryKey;type:uuid;default:uuid_generate_v4()"
     string name = 2;  // @gotags: gorm:"type:varchar(255);UNIQUE"
     string description = 3; // @gotags: gorm:"type:text"
-    int64 createdAt = 4; // @gotags: gorm:"autoCreateTime:milli;INDEX"
-    int64 updatedAt = 5; // @gotags: gorm:"autoUpdateTime:milli"
+    int64 createdAt = 4; // @gotags: gorm:"autoCreateTime:milli;INDEX" bson:"-"
+    int64 updatedAt = 5; // @gotags: gorm:"autoUpdateTime:milli" bson:"-"
 }
 
 // ======== Service ========

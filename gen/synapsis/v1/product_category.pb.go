@@ -28,8 +28,8 @@ type ProductCategory struct {
 	Id          string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`                   // @gotags: gorm:"primaryKey;type:uuid;default:uuid_generate_v4()"
 	Name        string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`               // @gotags: gorm:"type:varchar(255);UNIQUE"
 	Description string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"` // @gotags: gorm:"type:text"
-	CreatedAt   int64  `protobuf:"varint,4,opt,name=createdAt,proto3" json:"createdAt,omitempty"`    // @gotags: gorm:"autoCreateTime:milli;INDEX"
-	UpdatedAt   int64  `protobuf:"varint,5,opt,name=updatedAt,proto3" json:"updatedAt,omitempty"`    // @gotags: gorm:"autoUpdateTime:milli"
+	CreatedAt   int64  `protobuf:"varint,4,opt,name=createdAt,proto3" json:"createdAt,omitempty"`    // @gotags: gorm:"autoCreateTime:milli;INDEX" bson:"-"
+	UpdatedAt   int64  `protobuf:"varint,5,opt,name=updatedAt,proto3" json:"updatedAt,omitempty"`    // @gotags: gorm:"autoUpdateTime:milli" bson:"-"
 }
 
 func (x *ProductCategory) Reset() {
