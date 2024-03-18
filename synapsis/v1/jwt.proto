@@ -5,8 +5,8 @@ package synapsis.v1;
 option  go_package = "github.com/khafidprayoga/synapsis-service/v1;synapsisv1";
 
 enum UserRole {
-  ADMIN = 0;
-  REGULAR = 1;
+  REGULAR = 0;
+  ADMIN = 1;
 }
 
 message Claims {

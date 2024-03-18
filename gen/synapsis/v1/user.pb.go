@@ -122,7 +122,7 @@ func (x *User) GetRole() UserRole {
 	if x != nil {
 		return x.Role
 	}
-	return UserRole_ADMIN
+	return UserRole_REGULAR
 }
 
 func (x *User) GetDt() *DT {
