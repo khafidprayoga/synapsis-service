@@ -12,7 +12,7 @@ type UserRepository interface {
 	GetUserByEmail(_ context.Context, email string) (*synapsisv1.User, error)
 	GetUserById(_ context.Context, userId string) (*synapsisv1.User, error)
 	DeleteUserById(_ context.Context, userId string) error
-	UpdateUser(_ context.Context, user *synapsisv1.User) (*synapsisv1.User, error)
+	//UpdateUser(_ context.Context, user *synapsisv1.User) (*synapsisv1.User, error)
 }
 
 // ProductRepository
@@ -30,7 +30,7 @@ type ProductRepository interface {
 	//DeleteProductById(_ context.Context, productId string) error
 	//UpdateProduct(_ context.Context, product *synapsisv1.Product) (*synapsisv1.Product, error)
 
-	//GetProductRelations(_ context.Context, productId string) ([]*synapsisv1.ProductCategoryRelation, error)
+	GetProductRelations(_ context.Context, productId string) ([]*synapsisv1.ProductCategoryRelation, error)
 }
 
 // AuthRepository

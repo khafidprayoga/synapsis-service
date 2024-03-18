@@ -41,13 +41,13 @@ func (p postgresRepository) CreateProduct(
 	}, nil
 }
 
-// todo: optimize with join to category and relations only call db with 1 query
 func (p postgresRepository) GetProductById(
-	_ context.Context,
+	ctx context.Context,
 	productId string) (*synapsisv1.Product, error) {
 
 	productData := &synapsisv1.Product{}
 	findProductById := p.orm.
+		WithContext(ctx).
 		Where("product.id = ?", productId).
 		//Where("product.deleted_at IS NULL").
 		Find(&productData).Debug()
@@ -60,12 +60,9 @@ func (p postgresRepository) GetProductById(
 		return nil, gorm.ErrRecordNotFound
 	}
 
-	relations := []*synapsisv1.ProductCategoryRelation{}
-	findRelations := p.orm.
-		Where("product_id = ?", productData.GetId()).
-		Find(&relations).Debug()
-	if findRelations.Error != nil {
-		return nil, unwrapError(findRelations)
+	relations, findRelationsErr := p.GetProductRelations(ctx, productData.GetId())
+	if findRelationsErr != nil {
+		return nil, findRelationsErr
 	}
 
 	//  get the category id
@@ -74,13 +71,9 @@ func (p postgresRepository) GetProductById(
 			return relation.GetProductCategoryId()
 		})
 
-	categories := []*synapsisv1.ProductCategory{}
-
-	findCategories := p.orm.
-		Where("id IN (?)", categoryId).
-		Find(&categories)
-	if findCategories.Error != nil {
-		return nil, unwrapError(findCategories)
+	categories, findCategoriesErr := p.GetProductCategoryById(ctx, categoryId...)
+	if findCategoriesErr != nil {
+		return nil, findCategoriesErr
 	}
 
 	productData.ProductCategories = categories
