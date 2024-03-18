@@ -11,7 +11,7 @@ message Product {
   string name = 2; // @gotags: gorm:"type:varchar(255)"
   string description = 4; // @gotags: gorm:"type:text"
   double price = 5; // @gotags: gorm:"type:decimal(10,2)"
-  string imageId = 6; // @gotags: gorm:"type:text" bson:"image_id"`
+  string imageURL = 6; // @gotags: gorm:"type:text" bson:"image_url"`
   int64 createdAt = 99; // @gotags: gorm:"autoCreateTime:milli;INDEX" bson:"-"
   int64 updatedAt = 100; // @gotags: gorm:"autoUpdateTime:milli;INDEX" bson:"-"
   repeated ProductCategory productCategories = 90; // @gotags: gorm:"-:all" bson:"product_categories"`
@@ -28,7 +28,10 @@ message ProductCategoryRelation {
 message CreateProductRequest{
   string name = 1;
   string description = 2;
-  repeated string productCategoryIds = 3;
+  string imageURL = 3;
+  double price = 4;
+
+  repeated string productCategoryIds = 99;
 }
 
 message CreateProductResponse{

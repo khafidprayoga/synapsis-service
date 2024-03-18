@@ -13,6 +13,25 @@ type userRepository interface {
 	UpdateUser(_ context.Context, user *synapsisv1.User) (*synapsisv1.User, error)
 }
 
+type productRepository interface {
+	//CreateProductCategory(_ context.Context, _ *synapsisv1.CreateProductCategoryRequest) (*synapsisv1.CreateProductCategoryResponse, error)
+	GetProductCategoryById(_ context.Context, categoryId ...string) ([]*synapsisv1.ProductCategory, error)
+	//GetProductCategories(_ context.Context) ([]*synapsisv1.ProductCategory, error)
+	//DeleteProductCategoryById(_ context.Context, categoryId string) error
+	//UpdateProductCategory(_ context.Context, category *synapsisv1.ProductCategory) (*synapsisv1.ProductCategory, error)
+
+	CreateProduct(_ context.Context, _ *synapsisv1.Product) (*synapsisv1.CreateProductResponse, error)
+	//GetProductById(_ context.Context, productId string) (*synapsisv1.Product, error)
+	//GetProducts(_ context.Context, request synapsisv1.GetProductsRequest) ([]*synapsisv1.Product, error)
+	//DeleteProductById(_ context.Context, productId string) error
+	//UpdateProduct(_ context.Context, product *synapsisv1.Product) (*synapsisv1.Product, error)
+
+	//GetProductRelations(_ context.Context, productId string) ([]*synapsisv1.ProductCategoryRelation, error)
+}
+
+type authRepository interface{}
+
 type SynapsisRepository interface {
 	userRepository
+	productRepository
 }

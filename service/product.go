@@ -2,7 +2,12 @@ package service
 
 import (
 	"context"
+	validation "github.com/go-ozzo/ozzo-validation"
 	synapsisv1 "github.com/khafidprayoga/synapsis-service/gen/synapsis/v1"
+	"github.com/samber/lo"
+	epb "google.golang.org/genproto/googleapis/rpc/errdetails"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -10,8 +15,86 @@ func (s synapsisService) CreateProduct(
 	ctx context.Context,
 	request *synapsisv1.CreateProductRequest,
 ) (*synapsisv1.CreateProductResponse, error) {
-	//TODO implement me
-	panic("implement me")
+	{
+		errDetails := &epb.ErrorInfo{
+			Domain: "product",
+		}
+		st := status.New(codes.InvalidArgument, "invalid request for create product data")
+		_, e := st.WithDetails(errDetails)
+
+		nameProductErr := validation.Validate(
+			request.GetName(),
+			validation.Required,
+			validation.Length(3, 100),
+		)
+		if nameProductErr != nil {
+			errDetails.Reason = nameProductErr.Error()
+			return nil, e
+		}
+
+		descProductErr := validation.Validate(
+			request.GetDescription(),
+			validation.Required,
+		)
+		if descProductErr != nil {
+			errDetails.Reason = descProductErr.Error()
+			return nil, e
+		}
+
+		if request.GetPrice() <= 0 {
+			errDetails.Reason = "price must be greater than 0"
+			return nil, e
+		}
+
+		productIdErr := validation.Validate(
+			request.GetProductCategoryIds(),
+			validation.Required,
+			validation.Each(validation.Required),
+		)
+
+		if productIdErr != nil {
+			errDetails.Reason = productIdErr.Error()
+			return nil, e
+		}
+		request.ProductCategoryIds = lo.Uniq(request.GetProductCategoryIds())
+
+		if request.GetImageURL() == "" {
+			request.ImageURL = "https://picsum.photos/seed/picsum/854/480"
+		}
+	}
+
+	productCat, errGetProductCat := s.
+		repo.
+		GetProductCategoryById(ctx, request.GetProductCategoryIds()...)
+
+	if errGetProductCat != nil {
+		return nil, status.Errorf(codes.Internal, errGetProductCat.Error())
+	}
+
+	if len(productCat) == 0 {
+		return nil, status.Errorf(codes.NotFound, "contains invalid product category (empty)")
+	}
+	product := &synapsisv1.Product{
+		Name:              request.GetName(),
+		Description:       request.GetDescription(),
+		Price:             request.GetPrice(),
+		ImageURL:          request.GetImageURL(),
+		ProductCategories: productCat,
+	}
+
+	productData, errCreateProduct := s.repo.CreateProduct(ctx, product)
+	if errCreateProduct != nil {
+		errDetails := &epb.ErrorInfo{
+			Reason:   errCreateProduct.Error(),
+			Domain:   "product",
+			Metadata: nil,
+		}
+		st := status.New(codes.Internal, "error create product data")
+		_, e := st.WithDetails(errDetails)
+		return nil, e
+	}
+
+	return productData, nil
 }
 
 func (s synapsisService) GetProductById(
