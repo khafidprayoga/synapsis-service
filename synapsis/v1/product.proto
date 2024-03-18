@@ -14,14 +14,15 @@ message Product {
   string imageURL = 6; // @gotags: gorm:"type:text" bson:"image_url"`
   int64 createdAt = 99; // @gotags: gorm:"autoCreateTime:milli;INDEX" bson:"-"
   int64 updatedAt = 100; // @gotags: gorm:"autoUpdateTime:milli;INDEX" bson:"-"
+  optional int64 deletedAt = 101; // @gotags: gorm:"NULL" bson:"-"
   repeated ProductCategory productCategories = 90; // @gotags: gorm:"-:all" bson:"product_categories"`
   optional double qty = 91; // @gotags: gorm:"-:all" bson:"qty"`
 }
 
 message ProductCategoryRelation {
   string id = 1; // @gotags: gorm:"primaryKey;type:uuid;default:uuid_generate_v4()"
-  string productId = 2; // @gotags: gorm:"type:varchar(255);INDEX"
-  string productCategoryId = 3; // @gotags: gorm:"type:varchar(255);INDEX"
+  string productId = 2; // @gotags: gorm:"type:uuid;INDEX"
+  string productCategoryId = 3; // @gotags: gorm:"type:uuid;INDEX"
 }
 
 // Service

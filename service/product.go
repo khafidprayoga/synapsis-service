@@ -104,8 +104,25 @@ func (s synapsisService) GetProductById(
 	ctx context.Context,
 	request *synapsisv1.GetProductByIdRequest,
 ) (*synapsisv1.GetProductByIdResponse, error) {
-	//TODO implement me
-	panic("implement me")
+	if validateProductIdErr := validation.Validate(
+		request.GetId(),
+		validation.Required); validateProductIdErr != nil {
+		return nil, status.Error(codes.InvalidArgument, validateProductIdErr.Error())
+	}
+
+	productData, errGetProduct := s.productRepo.GetProductById(ctx, request.GetId())
+	if errGetProduct != nil {
+		st := status.New(codes.Internal, "error get product data by id")
+		formatted, _ := st.WithDetails(&epb.ErrorInfo{
+			Reason: errGetProduct.Error(),
+			Domain: "product",
+		})
+		return nil, formatted.Err()
+	}
+
+	return &synapsisv1.GetProductByIdResponse{
+		Product: productData,
+	}, nil
 }
 
 func (s synapsisService) UpdateProduct(
