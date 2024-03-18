@@ -49,11 +49,15 @@ func (p postgresRepository) GetProductById(
 	productData := &synapsisv1.Product{}
 	findProductById := p.orm.
 		Where("product.id = ?", productId).
-		Where("product.deleted_at IS NULL").
+		//Where("product.deleted_at IS NULL").
 		Find(&productData).Debug()
 
 	if findProductById.Error != nil {
 		return nil, unwrapError(findProductById)
+	}
+
+	if productData.GetDeletedAt() > 0 {
+		return nil, gorm.ErrRecordNotFound
 	}
 
 	relations := []*synapsisv1.ProductCategoryRelation{}
