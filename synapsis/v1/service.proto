@@ -7,6 +7,7 @@ import "google/protobuf/empty.proto";
 
 import "synapsis/v1/user.proto";
 import "synapsis/v1/product_category.proto";
+import "synapsis/v1/auth.proto";
 
 message PingResponse{
   string message = 1;
@@ -14,8 +15,17 @@ message PingResponse{
 
 service SynapsisService {
   rpc Ping(google.protobuf.Empty) returns (PingResponse);
-  // Auth
+
+  // User
   rpc CreateUser(synapsis.v1.CreateUserRequest) returns (synapsis.v1.CreateUserResponse);
+  rpc GetUserById(synapsis.v1.GetUserByIdRequest) returns (synapsis.v1.GetUserByIdResponse);
+  // User
+
+  // Auth
+  rpc Login(synapsis.v1.LoginRequest) returns (synapsis.v1.LoginResponse);
+  rpc Logout(synapsis.v1.LogoutRequest) returns (google.protobuf.Empty);
+  rpc ForgotPassword(synapsis.v1.ForgotPasswordRequest) returns (synapsis.v1.ForgotPasswordResponse);
+  rpc ResetPassword(synapsis.v1.ResetPasswordRequest) returns (google.protobuf.Empty);
   // Auth
 
   // Product Category

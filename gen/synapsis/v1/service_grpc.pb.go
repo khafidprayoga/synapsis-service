@@ -22,6 +22,11 @@ const _ = grpc.SupportPackageIsVersion7
 const (
 	SynapsisService_Ping_FullMethodName                  = "/synapsis.v1.SynapsisService/Ping"
 	SynapsisService_CreateUser_FullMethodName            = "/synapsis.v1.SynapsisService/CreateUser"
+	SynapsisService_GetUserById_FullMethodName           = "/synapsis.v1.SynapsisService/GetUserById"
+	SynapsisService_Login_FullMethodName                 = "/synapsis.v1.SynapsisService/Login"
+	SynapsisService_Logout_FullMethodName                = "/synapsis.v1.SynapsisService/Logout"
+	SynapsisService_ForgotPassword_FullMethodName        = "/synapsis.v1.SynapsisService/ForgotPassword"
+	SynapsisService_ResetPassword_FullMethodName         = "/synapsis.v1.SynapsisService/ResetPassword"
 	SynapsisService_CreateProductCategory_FullMethodName = "/synapsis.v1.SynapsisService/CreateProductCategory"
 	SynapsisService_GetProductCategory_FullMethodName    = "/synapsis.v1.SynapsisService/GetProductCategory"
 	SynapsisService_UpdateProductCategory_FullMethodName = "/synapsis.v1.SynapsisService/UpdateProductCategory"
@@ -34,8 +39,14 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type SynapsisServiceClient interface {
 	Ping(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*PingResponse, error)
-	// Auth
+	// User
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
+	GetUserById(ctx context.Context, in *GetUserByIdRequest, opts ...grpc.CallOption) (*GetUserByIdResponse, error)
+	// Auth
+	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
+	Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	ForgotPassword(ctx context.Context, in *ForgotPasswordRequest, opts ...grpc.CallOption) (*ForgotPasswordResponse, error)
+	ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Product Category
 	CreateProductCategory(ctx context.Context, in *CreateProductCategoryRequest, opts ...grpc.CallOption) (*CreateProductCategoryResponse, error)
 	GetProductCategory(ctx context.Context, in *GetProductCategoryRequest, opts ...grpc.CallOption) (*GetProductCategoryResponse, error)
@@ -64,6 +75,51 @@ func (c *synapsisServiceClient) Ping(ctx context.Context, in *emptypb.Empty, opt
 func (c *synapsisServiceClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error) {
 	out := new(CreateUserResponse)
 	err := c.cc.Invoke(ctx, SynapsisService_CreateUser_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *synapsisServiceClient) GetUserById(ctx context.Context, in *GetUserByIdRequest, opts ...grpc.CallOption) (*GetUserByIdResponse, error) {
+	out := new(GetUserByIdResponse)
+	err := c.cc.Invoke(ctx, SynapsisService_GetUserById_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *synapsisServiceClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error) {
+	out := new(LoginResponse)
+	err := c.cc.Invoke(ctx, SynapsisService_Login_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *synapsisServiceClient) Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, SynapsisService_Logout_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *synapsisServiceClient) ForgotPassword(ctx context.Context, in *ForgotPasswordRequest, opts ...grpc.CallOption) (*ForgotPasswordResponse, error) {
+	out := new(ForgotPasswordResponse)
+	err := c.cc.Invoke(ctx, SynapsisService_ForgotPassword_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *synapsisServiceClient) ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, SynapsisService_ResetPassword_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -120,8 +176,14 @@ func (c *synapsisServiceClient) GetProductCategories(ctx context.Context, in *Ge
 // for forward compatibility
 type SynapsisServiceServer interface {
 	Ping(context.Context, *emptypb.Empty) (*PingResponse, error)
-	// Auth
+	// User
 	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
+	GetUserById(context.Context, *GetUserByIdRequest) (*GetUserByIdResponse, error)
+	// Auth
+	Login(context.Context, *LoginRequest) (*LoginResponse, error)
+	Logout(context.Context, *LogoutRequest) (*emptypb.Empty, error)
+	ForgotPassword(context.Context, *ForgotPasswordRequest) (*ForgotPasswordResponse, error)
+	ResetPassword(context.Context, *ResetPasswordRequest) (*emptypb.Empty, error)
 	// Product Category
 	CreateProductCategory(context.Context, *CreateProductCategoryRequest) (*CreateProductCategoryResponse, error)
 	GetProductCategory(context.Context, *GetProductCategoryRequest) (*GetProductCategoryResponse, error)
@@ -140,6 +202,21 @@ func (UnimplementedSynapsisServiceServer) Ping(context.Context, *emptypb.Empty) 
 }
 func (UnimplementedSynapsisServiceServer) CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
+}
+func (UnimplementedSynapsisServiceServer) GetUserById(context.Context, *GetUserByIdRequest) (*GetUserByIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserById not implemented")
+}
+func (UnimplementedSynapsisServiceServer) Login(context.Context, *LoginRequest) (*LoginResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
+}
+func (UnimplementedSynapsisServiceServer) Logout(context.Context, *LogoutRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Logout not implemented")
+}
+func (UnimplementedSynapsisServiceServer) ForgotPassword(context.Context, *ForgotPasswordRequest) (*ForgotPasswordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ForgotPassword not implemented")
+}
+func (UnimplementedSynapsisServiceServer) ResetPassword(context.Context, *ResetPasswordRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ResetPassword not implemented")
 }
 func (UnimplementedSynapsisServiceServer) CreateProductCategory(context.Context, *CreateProductCategoryRequest) (*CreateProductCategoryResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateProductCategory not implemented")
@@ -201,6 +278,96 @@ func _SynapsisService_CreateUser_Handler(srv interface{}, ctx context.Context, d
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(SynapsisServiceServer).CreateUser(ctx, req.(*CreateUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SynapsisService_GetUserById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserByIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SynapsisServiceServer).GetUserById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SynapsisService_GetUserById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SynapsisServiceServer).GetUserById(ctx, req.(*GetUserByIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SynapsisService_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SynapsisServiceServer).Login(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SynapsisService_Login_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SynapsisServiceServer).Login(ctx, req.(*LoginRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SynapsisService_Logout_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LogoutRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SynapsisServiceServer).Logout(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SynapsisService_Logout_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SynapsisServiceServer).Logout(ctx, req.(*LogoutRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SynapsisService_ForgotPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ForgotPasswordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SynapsisServiceServer).ForgotPassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SynapsisService_ForgotPassword_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SynapsisServiceServer).ForgotPassword(ctx, req.(*ForgotPasswordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SynapsisService_ResetPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ResetPasswordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SynapsisServiceServer).ResetPassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SynapsisService_ResetPassword_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SynapsisServiceServer).ResetPassword(ctx, req.(*ResetPasswordRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -309,6 +476,26 @@ var SynapsisService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateUser",
 			Handler:    _SynapsisService_CreateUser_Handler,
+		},
+		{
+			MethodName: "GetUserById",
+			Handler:    _SynapsisService_GetUserById_Handler,
+		},
+		{
+			MethodName: "Login",
+			Handler:    _SynapsisService_Login_Handler,
+		},
+		{
+			MethodName: "Logout",
+			Handler:    _SynapsisService_Logout_Handler,
+		},
+		{
+			MethodName: "ForgotPassword",
+			Handler:    _SynapsisService_ForgotPassword_Handler,
+		},
+		{
+			MethodName: "ResetPassword",
+			Handler:    _SynapsisService_ResetPassword_Handler,
 		},
 		{
 			MethodName: "CreateProductCategory",

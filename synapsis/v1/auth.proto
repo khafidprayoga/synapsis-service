@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package synapsis.v1;
+
+option  go_package = "github.com/khafidprayoga/synapsis-service/v1;synapsisv1";
+import "synapsis/v1/jwt.proto";
+
+message LoginRequest{
+    string username = 1;
+    string password = 2;
+}
+
+message LoginResponse{
+    string token = 1;
+    Claims claims = 2;
+}
+
+message LogoutRequest{
+    string token = 1;
+}
+
+message ForgotPasswordRequest{
+    string email = 1;
+}
+
+message ForgotPasswordResponse{
+    string userId = 1;
+    string resetToken = 2;
+}
+
+message ResetPasswordRequest{
+    string userId = 1;
+    string resetToken = 2;
+    string oldPassword = 3;
+    string newPassword = 4;
+}

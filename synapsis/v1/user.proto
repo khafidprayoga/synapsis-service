@@ -26,3 +26,11 @@ message CreateUserRequest{
 message CreateUserResponse{
   User user = 1;
 }
+
+message GetUserByIdRequest{
+  string id = 1;
+}
+
+message GetUserByIdResponse{
+  User user = 1;
+}
