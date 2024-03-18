@@ -11,7 +11,8 @@ func (p postgresRepository) CreateProduct(
 	productData *synapsisv1.Product,
 ) (*synapsisv1.CreateProductResponse, error) {
 	errDoTX := p.orm.Transaction(func(tx *gorm.DB) error {
-		if errInsertProduct := tx.Create(&productData); errInsertProduct != nil {
+		errInsertProduct := tx.Create(&productData)
+		if errInsertProduct.Error != nil {
 			return errInsertProduct.Error
 		}
 
@@ -22,8 +23,10 @@ func (p postgresRepository) CreateProduct(
 				ProductCategoryId: category.GetId(),
 			})
 		}
-		if errInsertRelation := tx.Create(&productCatRel); errInsertRelation != nil {
-			return errInsertRelation.Error
+
+		insertRelation := tx.Create(&productCatRel)
+		if insertRelation.Error != nil {
+			return insertRelation.Error
 		}
 		return nil
 	})

@@ -31,18 +31,6 @@ func (s synapsisService) CreateProduct(
 			return nil, formatted.Err()
 		}
 
-		descProductErr := validation.Validate(
-			request.GetDescription(),
-			validation.Required,
-		)
-		if descProductErr != nil {
-			formatted, _ := st.WithDetails(&epb.ErrorInfo{
-				Reason: descProductErr.Error(),
-				Domain: "product.description",
-			})
-			return nil, formatted.Err()
-		}
-
 		if request.GetPrice() <= 0 {
 			formatted, _ := st.WithDetails(&epb.ErrorInfo{
 				Reason: "price must be greater than 0",
