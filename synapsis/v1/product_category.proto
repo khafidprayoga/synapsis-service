@@ -15,12 +15,15 @@ message ProductCategory{
 
 // ======== Service ========
 message CreateProductCategoryRequest{
-    string name = 1;
-    string description = 2;
+    message Data{
+        string name = 1;
+        string description = 2;
+    }
+    repeated Data data = 1;
 }
 
 message CreateProductCategoryResponse{
-    ProductCategory productCategory = 1;
+    repeated ProductCategory productCategory = 1;
 }
 
 message GetProductCategoryRequest{

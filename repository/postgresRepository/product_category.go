@@ -16,3 +16,19 @@ func (p postgresRepository) GetProductCategoryById(
 
 	return cat, unwrapError(result)
 }
+
+func (p postgresRepository) CreateProductCategory(
+	ctx context.Context,
+	data []*synapsisv1.ProductCategory,
+) ([]*synapsisv1.ProductCategory, error) {
+	createdProductCategory := p.
+		orm.
+		WithContext(ctx).
+		Create(data)
+
+	if createdProductCategory.Error != nil {
+		return data, unwrapError(createdProductCategory)
+	}
+
+	return data, nil
+}

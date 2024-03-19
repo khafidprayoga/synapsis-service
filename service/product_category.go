@@ -2,7 +2,12 @@ package service
 
 import (
 	"context"
+	"fmt"
+	validation "github.com/go-ozzo/ozzo-validation"
 	synapsisv1 "github.com/khafidprayoga/synapsis-service/gen/synapsis/v1"
+	epb "google.golang.org/genproto/googleapis/rpc/errdetails"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -10,8 +15,55 @@ func (s synapsisService) CreateProductCategory(
 	ctx context.Context,
 	request *synapsisv1.CreateProductCategoryRequest,
 ) (*synapsisv1.CreateProductCategoryResponse, error) {
-	//TODO implement me
-	panic("implement me")
+	productCategory := []*synapsisv1.ProductCategory{}
+	{
+		st := status.New(codes.InvalidArgument, "invalid request for create product category data")
+		if len(request.GetData()) == 0 {
+			formatted, _ := st.WithDetails(&epb.ErrorInfo{
+				Reason: "data must not be empty",
+				Domain: "productCategory",
+			})
+			return nil, formatted.Err()
+		}
+
+		for index, d := range request.GetData() {
+			nameProductCatErr := validation.Validate(
+				d.GetName(),
+				validation.Required,
+			)
+
+			if nameProductCatErr != nil {
+				formatted, _ := st.WithDetails(&epb.ErrorInfo{
+					Reason: nameProductCatErr.Error(),
+					Domain: "productCategory.name",
+					Metadata: map[string]string{
+						"arrayIndex": fmt.Sprintf("%v", index),
+					},
+				})
+				return nil, formatted.Err()
+			}
+
+			productCategory = append(productCategory, &synapsisv1.ProductCategory{
+				Name:        d.GetName(),
+				Description: d.GetDescription(),
+			})
+		}
+	}
+
+	createdCategory, errCreate := s.productRepo.CreateProductCategory(ctx, productCategory)
+	if errCreate != nil {
+		st := status.New(codes.Internal, "error create product category data")
+		formatted, _ := st.WithDetails(&epb.ErrorInfo{
+			Reason: errCreate.Error(),
+			Domain: "productCategory",
+		})
+
+		return nil, formatted.Err()
+	}
+
+	return &synapsisv1.CreateProductCategoryResponse{
+		ProductCategory: createdCategory,
+	}, nil
 }
 
 func (s synapsisService) GetProductCategory(

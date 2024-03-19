@@ -18,7 +18,7 @@ type UserRepository interface {
 // ProductRepository
 // it use postgres as data store
 type ProductRepository interface {
-	//CreateProductCategory(_ context.Context, _ *synapsisv1.CreateProductCategoryRequest) (*synapsisv1.CreateProductCategoryResponse, error)
+	CreateProductCategory(_ context.Context, _ []*synapsisv1.ProductCategory) ([]*synapsisv1.ProductCategory, error)
 	GetProductCategoryById(_ context.Context, categoryId ...string) ([]*synapsisv1.ProductCategory, error)
 	//GetProductCategories(_ context.Context) ([]*synapsisv1.ProductCategory, error)
 	//DeleteProductCategoryById(_ context.Context, categoryId string) error
