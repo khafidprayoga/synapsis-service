@@ -1,4 +1,4 @@
-package redisRepository
+package authRepository
 
 import (
 	"errors"

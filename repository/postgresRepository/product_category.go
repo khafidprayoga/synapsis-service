@@ -41,7 +41,7 @@ func (p postgresRepository) GetProductCategories(
 ) (int64, []*synapsisv1.ProductCategory, error) {
 	categories := []*synapsisv1.ProductCategory{}
 	q := p.orm.
-		WithContext(ctx).Table("product_category").Debug()
+		WithContext(ctx).Table("product_category")
 
 	if paging.GetSearch() != "" {
 		search := "%" + paging.GetSearch() + "%"

@@ -2,6 +2,8 @@ package postgresRepository
 
 import (
 	"context"
+	"fmt"
+	commonHelper "github.com/khafidprayoga/synapsis-service/common/helper"
 	synapsisv1 "github.com/khafidprayoga/synapsis-service/gen/synapsis/v1"
 	"github.com/samber/lo"
 	"gorm.io/gorm"
@@ -78,4 +80,51 @@ func (p postgresRepository) GetProductById(
 
 	productData.ProductCategories = categories
 	return productData, nil
+}
+
+func (p postgresRepository) GetProducts(
+	ctx context.Context,
+	paging *synapsisv1.Pagination,
+) (int64, []*synapsisv1.Product, error) {
+	products := []*synapsisv1.Product{}
+	q := p.orm.
+		WithContext(ctx).
+		Table("product").
+		Where("deleted_at is NULL")
+
+	if paging.GetSearch() != "" {
+		search := "%" + paging.GetSearch() + "%"
+		q = q.Where("name ILIKE ? OR description ILIKE ?", search, search)
+	}
+
+	if paging.GetStartAt() != nil && paging.GetEndAt() != nil {
+		q = q.Where("created_at BETWEEN ? AND ?", paging.GetStartAt().AsTime(), paging.GetEndAt().AsTime())
+	}
+
+	if paging.GetOrderBy() != "" {
+		q = q.Order(
+			fmt.Sprintf(
+				"%s %s",
+				paging.GetOrderBy(),
+				commonHelper.PaginationSortSQL[paging.GetSort()]),
+		)
+	} else {
+		q = q.Order("name ASC")
+	}
+
+	var categoriesCount int64
+	count := q.Count(&categoriesCount)
+	if count.Error != nil {
+		return 0, products, unwrapError(count)
+	}
+
+	findAll := q.
+		Limit(int(paging.GetPage().GetLimit())).
+		Offset(int(paging.GetPage().GetOffset())).
+		Find(&products)
+	if findAll.Error != nil {
+		return 0, products, unwrapError(findAll)
+	}
+
+	return categoriesCount, products, nil
 }

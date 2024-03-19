@@ -10,9 +10,9 @@ import (
 	commonConf "github.com/khafidprayoga/synapsis-service/common/config"
 	commonConn "github.com/khafidprayoga/synapsis-service/common/conn"
 	synapsisv1 "github.com/khafidprayoga/synapsis-service/gen/synapsis/v1"
+	"github.com/khafidprayoga/synapsis-service/repository/authRepository"
 	"github.com/khafidprayoga/synapsis-service/repository/mongoRepository"
 	"github.com/khafidprayoga/synapsis-service/repository/postgresRepository"
-	"github.com/khafidprayoga/synapsis-service/repository/redisRepository"
 	"github.com/khafidprayoga/synapsis-service/seed"
 	"github.com/khafidprayoga/synapsis-service/service"
 	"go.uber.org/zap"
@@ -83,7 +83,7 @@ func main() {
 		log.Fatal("failed to initialize product repository", zap.Error(errInitProductRepo))
 	}
 
-	authRepo, errInitAuthRepo := redisRepository.NewRepository(log)
+	authRepo, errInitAuthRepo := authRepository.NewRepository(log)
 	if errInitProductRepo != nil {
 		log.Fatal("failed to initialize auth repository", zap.Error(errInitAuthRepo))
 	}

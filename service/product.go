@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	validation "github.com/go-ozzo/ozzo-validation"
+	commonHelper "github.com/khafidprayoga/synapsis-service/common/helper"
 	synapsisv1 "github.com/khafidprayoga/synapsis-service/gen/synapsis/v1"
 	"github.com/samber/lo"
 	epb "google.golang.org/genproto/googleapis/rpc/errdetails"
@@ -145,6 +146,86 @@ func (s synapsisService) GetProducts(
 	ctx context.Context,
 	request *synapsisv1.GetProductsRequest,
 ) (*synapsisv1.GetProductsResponse, error) {
-	//TODO implement me
-	panic("implement me")
+	allowedOrderBy := []string{"name"}
+	metadataErr := map[string]string{
+		"allowedOrderBy": "name",
+	}
+
+	st := status.New(codes.InvalidArgument, "invalid pagination request for get products data")
+	invalidPaginationReqErr := commonHelper.ValidatePaginationRequest(request.GetPagination(), allowedOrderBy...)
+	if invalidPaginationReqErr != nil {
+		formatted, _ := st.WithDetails(&epb.ErrorInfo{
+			Reason:   invalidPaginationReqErr.Error(),
+			Domain:   "products",
+			Metadata: metadataErr,
+		})
+		return nil, formatted.Err()
+	}
+
+	count, products, errGetCategory := s.productRepo.GetProducts(ctx, request.GetPagination())
+	if errGetCategory != nil {
+		st = status.New(codes.Internal, "error on get products data")
+		formatted, _ := st.WithDetails(&epb.ErrorInfo{
+			Reason:   errGetCategory.Error(),
+			Domain:   "products",
+			Metadata: metadataErr,
+		})
+
+		return nil, formatted.Err()
+	}
+
+	_, categories, errGetCategoies := s.productRepo.GetProductCategories(ctx, &synapsisv1.Pagination{
+		Page: &synapsisv1.Pagination_Page{
+			Limit:  100,
+			Offset: 0,
+		},
+	})
+
+	if errGetCategory != nil {
+		st = status.New(codes.Internal, "error on get product categories data")
+		formatted, _ := st.WithDetails(&epb.ErrorInfo{
+			Reason:   errGetCategoies.Error(),
+			Domain:   "productCategory",
+			Metadata: metadataErr,
+		})
+
+		return nil, formatted.Err()
+	}
+
+	for _, p := range products {
+		relations, errGetRelation := s.productRepo.GetProductRelations(ctx, p.GetId())
+		if errGetRelation != nil {
+			st = status.New(codes.Internal, "error on get product relation data")
+			formatted, _ := st.WithDetails(&epb.ErrorInfo{
+				Reason:   errGetRelation.Error(),
+				Domain:   "productRelation",
+				Metadata: metadataErr,
+			})
+			return nil, formatted.Err()
+		}
+
+		categoryId := lo.Map(relations,
+			func(relation *synapsisv1.ProductCategoryRelation, _ int) string {
+				return relation.GetProductCategoryId()
+			})
+
+		for _, rel := range categoryId {
+			for _, cat := range categories {
+				if cat.GetId() == rel {
+					if p.ProductCategories != nil {
+						p.ProductCategories = append(p.ProductCategories, cat)
+						continue
+					}
+					p.ProductCategories = []*synapsisv1.ProductCategory{cat}
+				}
+			}
+
+		}
+	}
+
+	request.Pagination.Count = count
+	return &synapsisv1.GetProductsResponse{
+		Products:   products,
+		Pagination: request.GetPagination(),
+	}, nil
 }
