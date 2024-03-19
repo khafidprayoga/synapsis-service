@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	validation "github.com/go-ozzo/ozzo-validation"
+	commonHelper "github.com/khafidprayoga/synapsis-service/common/helper"
 	synapsisv1 "github.com/khafidprayoga/synapsis-service/gen/synapsis/v1"
 	epb "google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
@@ -94,6 +95,37 @@ func (s synapsisService) GetProductCategories(
 	ctx context.Context,
 	request *synapsisv1.GetProductCategoriesRequest,
 ) (*synapsisv1.GetProductCategoriesResponse, error) {
-	//TODO implement me
-	panic("implement me")
+	allowedOrderBy := []string{"name"}
+	metadataErr := map[string]string{
+		"allowedOrderBy": "name",
+	}
+
+	st := status.New(codes.InvalidArgument, "invalid pagination request for get product category data")
+	invalidPaginationReqErr := commonHelper.ValidatePaginationRequest(request.GetPagination(), allowedOrderBy...)
+	if invalidPaginationReqErr != nil {
+		formatted, _ := st.WithDetails(&epb.ErrorInfo{
+			Reason:   invalidPaginationReqErr.Error(),
+			Domain:   "productCategory",
+			Metadata: metadataErr,
+		})
+		return nil, formatted.Err()
+	}
+
+	count, categories, errGetCategory := s.productRepo.GetProductCategories(ctx, request.GetPagination())
+	if errGetCategory != nil {
+		st = status.New(codes.Internal, "error on get product category data")
+		formatted, _ := st.WithDetails(&epb.ErrorInfo{
+			Reason:   errGetCategory.Error(),
+			Domain:   "productCategory",
+			Metadata: metadataErr,
+		})
+
+		return nil, formatted.Err()
+	}
+
+	request.Pagination.Count = count
+	return &synapsisv1.GetProductCategoriesResponse{
+		ProductCategories: categories,
+		Pagination:        request.GetPagination(),
+	}, nil
 }

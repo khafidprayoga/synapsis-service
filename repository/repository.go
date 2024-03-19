@@ -20,7 +20,7 @@ type UserRepository interface {
 type ProductRepository interface {
 	CreateProductCategory(_ context.Context, _ []*synapsisv1.ProductCategory) ([]*synapsisv1.ProductCategory, error)
 	GetProductCategoryById(_ context.Context, categoryId ...string) ([]*synapsisv1.ProductCategory, error)
-	//GetProductCategories(_ context.Context) ([]*synapsisv1.ProductCategory, error)
+	GetProductCategories(_ context.Context, _ *synapsisv1.Pagination) (int64, []*synapsisv1.ProductCategory, error)
 	//DeleteProductCategoryById(_ context.Context, categoryId string) error
 	//UpdateProductCategory(_ context.Context, category *synapsisv1.ProductCategory) (*synapsisv1.ProductCategory, error)
 

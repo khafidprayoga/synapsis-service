@@ -13,26 +13,31 @@ message DT {
 
 message Pagination {
   enum SortBy {
-    ASC = 0;
-    DESC = 1;
+    UNSPECIFIED = 0;
+    ASC = 1;
+    DESC = 2;
   }
 
   message Page{
-    int64 limit = 1;
-    int64 offset = 3;
-    string orderBy = 4;
-    SortBy sort = 5;
+    int32 limit = 1;
+    int32 offset = 3;
   }
 
   message Cursor{
     string sortId = 1;
-    string fieldValue = 2;
-    int64 count = 3;
+    string fieldName = 2;
+    string fieldValue = 3;
   }
 
-  Page page = 1;
-  Cursor cursor = 2;
-  string search = 3;
-  google.protobuf.Timestamp startAt = 4;
-  google.protobuf.Timestamp endAt = 5;
+  optional Page page = 1;
+  optional Cursor cursor = 2;
+  optional string search = 3;
+
+  optional google.protobuf.Timestamp startAt = 4;
+  optional google.protobuf.Timestamp endAt = 5;
+
+  optional string orderBy = 6; // field or properties name (snake_case)
+  optional SortBy sort = 7;
+
+  int64 count = 99;
 }
