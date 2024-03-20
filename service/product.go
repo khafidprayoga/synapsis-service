@@ -138,8 +138,24 @@ func (s synapsisService) DeleteProduct(
 	ctx context.Context,
 	request *synapsisv1.DeleteProductRequest,
 ) (*emptypb.Empty, error) {
-	//TODO implement me
-	panic("implement me")
+	if validateProductIdErr := validation.Validate(
+		request.GetId(),
+		validation.Required); validateProductIdErr != nil {
+		return nil, status.Error(codes.InvalidArgument, validateProductIdErr.Error())
+	}
+
+	_, errGetProduct := s.productRepo.GetProductById(ctx, request.GetId())
+	if errGetProduct != nil {
+		st := status.New(codes.Internal, "error get product data by id")
+		formatted, _ := st.WithDetails(&epb.ErrorInfo{
+			Reason: errGetProduct.Error(),
+			Domain: "product",
+		})
+		return nil, formatted.Err()
+	}
+
+	errDelete := s.productRepo.DeleteProductById(ctx, request.GetId())
+	return &emptypb.Empty{}, errDelete
 }
 
 func (s synapsisService) GetProducts(

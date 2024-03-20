@@ -7,6 +7,7 @@ import (
 	synapsisv1 "github.com/khafidprayoga/synapsis-service/gen/synapsis/v1"
 	"github.com/samber/lo"
 	"gorm.io/gorm"
+	"time"
 )
 
 func (p postgresRepository) CreateProduct(
@@ -127,4 +128,19 @@ func (p postgresRepository) GetProducts(
 	}
 
 	return categoriesCount, products, nil
+}
+
+func (p postgresRepository) DeleteProductById(
+	ctx context.Context,
+	productId string) error {
+	deleteProduct := p.orm.
+		WithContext(ctx).
+		Model(&synapsisv1.Product{}).
+		Where("id = ?", productId).
+		Update("deleted_at", time.Now().UnixMilli())
+	if deleteProduct.Error != nil {
+		return unwrapError(deleteProduct)
+	}
+
+	return nil
 }
