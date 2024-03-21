@@ -60,7 +60,10 @@ message UpdateProductRequest{
   string id = 1;
   string name = 2;
   string description = 3;
-  repeated string productCategoryIds = 4;
+  string imageURL = 4;
+  double price = 5;
+
+  repeated string productCategoryIds = 99;
 }
 
 message UpdateProductResponse{

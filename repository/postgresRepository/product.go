@@ -144,3 +144,49 @@ func (p postgresRepository) DeleteProductById(
 
 	return nil
 }
+
+func (p postgresRepository) UpdateProduct(
+	ctx context.Context,
+	product *synapsisv1.Product,
+) (*synapsisv1.Product, error) {
+	errDoTX := p.orm.Transaction(func(tx *gorm.DB) error {
+		tx = tx.WithContext(ctx)
+
+		// update product
+		updateProduct := tx.Save(&product)
+		if updateProduct.Error != nil {
+			return updateProduct.Error
+		}
+
+		// update product category relation
+		deleteRelation := tx.
+			Where("product_id = ?", product.GetId()).
+			Delete(&synapsisv1.ProductCategoryRelation{})
+		if deleteRelation.Error != nil {
+			return deleteRelation.Error
+		}
+
+		// insert new relation
+		relationId := []*synapsisv1.ProductCategoryRelation{}
+		for _, category := range product.GetProductCategories() {
+			relationId = append(relationId, &synapsisv1.ProductCategoryRelation{
+				ProductId:         product.GetId(),
+				ProductCategoryId: category.GetId(),
+			})
+		}
+
+		insertRelation := tx.
+			Create(&relationId)
+		if insertRelation.Error != nil {
+			return insertRelation.Error
+		}
+
+		return nil
+	})
+
+	if errDoTX != nil {
+		return nil, errDoTX
+	}
+
+	return p.GetProductById(ctx, product.GetId())
+}

@@ -28,7 +28,7 @@ type ProductRepository interface {
 	GetProductById(_ context.Context, productId string) (*synapsisv1.Product, error)
 	GetProducts(_ context.Context, _ *synapsisv1.Pagination) (int64, []*synapsisv1.Product, error)
 	DeleteProductById(_ context.Context, productId string) error
-	//UpdateProduct(_ context.Context, product *synapsisv1.Product) (*synapsisv1.Product, error)
+	UpdateProduct(_ context.Context, product *synapsisv1.Product) (*synapsisv1.Product, error)
 
 	GetProductRelations(_ context.Context, productId string) ([]*synapsisv1.ProductCategoryRelation, error)
 }

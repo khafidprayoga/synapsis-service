@@ -130,8 +130,99 @@ func (s synapsisService) UpdateProduct(
 	ctx context.Context,
 	request *synapsisv1.UpdateProductRequest,
 ) (*synapsisv1.GetProductByIdResponse, error) {
-	//TODO implement me
-	panic("implement me")
+	{
+		st := status.New(codes.InvalidArgument, "invalid request for create product data")
+
+		nameProductErr := validation.Validate(
+			request.GetName(),
+			validation.Required,
+			validation.Length(3, 100),
+		)
+		if nameProductErr != nil {
+			formatted, _ := st.WithDetails(&epb.ErrorInfo{
+				Reason: nameProductErr.Error(),
+				Domain: "product.name",
+			})
+			return nil, formatted.Err()
+		}
+
+		if request.GetPrice() <= 0 {
+			formatted, _ := st.WithDetails(&epb.ErrorInfo{
+				Reason: "price must be greater than 0",
+				Domain: "product.price",
+			})
+			return nil, formatted.Err()
+		}
+
+		productIdErr := validation.Validate(
+			request.GetProductCategoryIds(),
+			validation.Required,
+			validation.Each(validation.Required),
+		)
+
+		if productIdErr != nil {
+			formatted, _ := st.WithDetails(&epb.ErrorInfo{
+				Reason: productIdErr.Error(),
+				Domain: "product.productCategoryIds",
+			})
+			return nil, formatted.Err()
+		}
+		request.ProductCategoryIds = lo.Uniq(request.GetProductCategoryIds())
+
+		if request.GetImageURL() == "" {
+			request.ImageURL = "https://picsum.photos/seed/picsum/854/480"
+		}
+	}
+
+	productCat, errGetProductCat := s.
+		productRepo.
+		GetProductCategoryById(ctx, request.GetProductCategoryIds()...)
+
+	if errGetProductCat != nil {
+		errDetails := &epb.ErrorInfo{
+			Reason:   errGetProductCat.Error(),
+			Domain:   "product.productCategoryIds",
+			Metadata: nil,
+		}
+		st := status.New(codes.Internal, "error get product category data")
+		formatted, _ := st.WithDetails(errDetails)
+		return nil, formatted.Err()
+	}
+
+	if len(productCat) == 0 {
+		return nil, status.Errorf(codes.NotFound, "contains invalid product category (empty)")
+	}
+
+	p, errGetP := s.productRepo.GetProductById(ctx, request.GetId())
+	if errGetP != nil {
+		return nil, status.Errorf(codes.Internal, "error get product data by id: %s", errGetP)
+	}
+
+	var product = &synapsisv1.Product{
+		Id:                request.GetId(),
+		Name:              request.GetName(),
+		Description:       request.GetDescription(),
+		Price:             request.GetPrice(),
+		ImageURL:          request.GetImageURL(),
+		ProductCategories: productCat,
+		CreatedAt:         p.GetCreatedAt(),
+	}
+
+	productData, errCreateProduct := s.productRepo.UpdateProduct(ctx, product)
+	if errCreateProduct != nil {
+		errDetails := &epb.ErrorInfo{
+			Reason:   errCreateProduct.Error(),
+			Domain:   "product",
+			Metadata: nil,
+		}
+		st := status.New(codes.Internal, "error create product data")
+		formatted, _ := st.WithDetails(errDetails)
+		return nil, formatted.Err()
+	}
+
+	return &synapsisv1.GetProductByIdResponse{
+		Product: productData}, nil
+
 }
 
 func (s synapsisService) DeleteProduct(
