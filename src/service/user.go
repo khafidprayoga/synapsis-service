@@ -4,10 +4,10 @@ import (
 	"context"
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
+	"github.com/khafidprayoga/synapsis-service/src/gen/synapsis/v1"
 	"golang.org/x/text/language"
 	epb "google.golang.org/genproto/googleapis/rpc/errdetails"
 
-	synapsisv1 "github.com/khafidprayoga/synapsis-service/gen/synapsis/v1"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"time"

@@ -2,7 +2,7 @@ package authRepository
 
 import (
 	"errors"
-	"github.com/khafidprayoga/synapsis-service/repository"
+	"github.com/khafidprayoga/synapsis-service/src/repository"
 	"go.uber.org/zap"
 )
 

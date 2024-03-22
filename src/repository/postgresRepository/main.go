@@ -3,7 +3,7 @@ package postgresRepository
 import (
 	"errors"
 	"github.com/jackc/pgx/v5/pgconn"
-	"github.com/khafidprayoga/synapsis-service/repository"
+	"github.com/khafidprayoga/synapsis-service/src/repository"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"strings"

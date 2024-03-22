@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	synapsisv1 "github.com/khafidprayoga/synapsis-service/gen/synapsis/v1"
+	"github.com/khafidprayoga/synapsis-service/src/gen/synapsis/v1"
 )
 
 func (s synapsisService) CreateTransaction(

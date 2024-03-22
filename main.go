@@ -7,14 +7,14 @@ import (
 	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	"github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	commonConf "github.com/khafidprayoga/synapsis-service/common/config"
-	commonConn "github.com/khafidprayoga/synapsis-service/common/conn"
-	synapsisv1 "github.com/khafidprayoga/synapsis-service/gen/synapsis/v1"
-	"github.com/khafidprayoga/synapsis-service/repository/authRepository"
-	"github.com/khafidprayoga/synapsis-service/repository/mongoRepository"
-	"github.com/khafidprayoga/synapsis-service/repository/postgresRepository"
-	"github.com/khafidprayoga/synapsis-service/seed"
-	"github.com/khafidprayoga/synapsis-service/service"
+	commonConf2 "github.com/khafidprayoga/synapsis-service/src/common/config"
+	commonConn2 "github.com/khafidprayoga/synapsis-service/src/common/conn"
+	synapsisv12 "github.com/khafidprayoga/synapsis-service/src/gen/synapsis/v1"
+	"github.com/khafidprayoga/synapsis-service/src/repository/authRepository"
+	"github.com/khafidprayoga/synapsis-service/src/repository/mongoRepository"
+	"github.com/khafidprayoga/synapsis-service/src/repository/postgresRepository"
+	seed2 "github.com/khafidprayoga/synapsis-service/src/seed"
+	"github.com/khafidprayoga/synapsis-service/src/service"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/credentials/insecure"
 	"net"
@@ -35,7 +35,7 @@ var (
 func main() {
 	flagParse()
 	var (
-		log = commonConf.GetZapLogger()
+		log = commonConf2.GetZapLogger()
 	)
 
 	log.Info("starting synapsis service")
@@ -46,7 +46,7 @@ func main() {
 	)
 
 	log.Info("connecting to postgres")
-	psqlDB, errConPsql := commonConn.PostgresConnect()
+	psqlDB, errConPsql := commonConn2.PostgresConnect()
 	if errConPsql != nil {
 		log.Fatal("failed to connect to postgres", zap.Error(errConPsql))
 	}
@@ -59,14 +59,14 @@ func main() {
 		psqlDBDebug.Raw(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`)
 		log.Info("migrating postgres schema")
 		psqlDBDebug.AutoMigrate(
-			&synapsisv1.ProductCategory{},
-			&synapsisv1.Product{},
-			&synapsisv1.ProductCategoryRelation{},
+			&synapsisv12.ProductCategory{},
+			&synapsisv12.Product{},
+			&synapsisv12.ProductCategoryRelation{},
 		)
 	}
 
 	log.Info("connecting to mongo")
-	mongoClient, errConMongo := commonConn.MongoConnect(context.Background())
+	mongoClient, errConMongo := commonConn2.MongoConnect(context.Background())
 	if errConMongo != nil {
 		log.Fatal("failed to connect to mongo", zap.Error(errConMongo))
 	}
@@ -97,7 +97,7 @@ func main() {
 
 	if seedDataSource {
 		// seed to postgres data
-		productCategory := seed.NewProductCategory()
+		productCategory := seed2.NewProductCategory()
 
 		log.Info("seeding product category data")
 		r := psqlDBDebug.Create(&productCategory)
@@ -111,10 +111,10 @@ func main() {
 		// seed to mongo data
 		// user domain
 		{
-			user := seed.NewUser()
+			user := seed2.NewUser()
 			log.Info("seeding user data")
 			for _, u := range user {
-				_, errInsert := userRepo.CreateUser(context.Background(), &synapsisv1.CreateUserRequest{
+				_, errInsert := userRepo.CreateUser(context.Background(), &synapsisv12.CreateUserRequest{
 					FullName: u.GetFullName(),
 					Email:    u.GetEmail(),
 					Password: u.GetPassword(),
@@ -146,7 +146,7 @@ func main() {
 		),
 	)
 
-	synapsisv1.RegisterSynapsisServiceServer(s, handler)
+	synapsisv12.RegisterSynapsisServiceServer(s, handler)
 	reflection.Register(s)
 
 	serveRpc := func() {
@@ -174,7 +174,7 @@ func main() {
 	}
 
 	log.Info("registering grpc service for HTTP endpoint")
-	errRegister := synapsisv1.RegisterSynapsisServiceHandler(context.Background(), mux, rpcConn)
+	errRegister := synapsisv12.RegisterSynapsisServiceHandler(context.Background(), mux, rpcConn)
 	if errRegister != nil {
 		log.Fatal("failed to register grpc service", zap.Error(errRegister))
 	}
@@ -192,7 +192,7 @@ func main() {
 
 func flagParse() {
 	flag.IntVar(&httpPort, "http", 0, "http port")
-	flag.IntVar(&rpcPort, "rpc", commonConf.GRPCAddress, "rpc port")
+	flag.IntVar(&rpcPort, "rpc", commonConf2.GRPCAddress, "rpc port")
 	flag.BoolVar(&migrateSchema, "migrate", false, "migrate schema")
 	flag.BoolVar(&seedDataSource, "seed", false, "seed data")
 

@@ -2,7 +2,7 @@ package mongoRepository
 
 import (
 	"errors"
-	"github.com/khafidprayoga/synapsis-service/repository"
+	"github.com/khafidprayoga/synapsis-service/src/repository"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.uber.org/zap"
 )

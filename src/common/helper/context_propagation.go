@@ -6,7 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/google/uuid"
-	synapsisv1 "github.com/khafidprayoga/synapsis-service/gen/synapsis/v1"
+	"github.com/khafidprayoga/synapsis-service/src/gen/synapsis/v1"
 	"google.golang.org/grpc/metadata"
 	"strings"
 	"time"
