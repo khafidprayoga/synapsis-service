@@ -4,13 +4,13 @@ import (
 	"context"
 	"fmt"
 	"github.com/khafidprayoga/synapsis-service/src/common/helper"
-	synapsisv12 "github.com/khafidprayoga/synapsis-service/src/gen/synapsis/v1"
+	synapsisv1 "github.com/khafidprayoga/synapsis-service/src/gen/synapsis/v1"
 )
 
 func (p postgresRepository) GetProductCategoryById(
 	ctx context.Context,
 	categoryId ...string,
-) (cat []*synapsisv12.ProductCategory, e error) {
+) (cat []*synapsisv1.ProductCategory, e error) {
 	result := p.orm.
 		WithContext(ctx).
 		Where("id IN (?)", categoryId).
@@ -21,8 +21,8 @@ func (p postgresRepository) GetProductCategoryById(
 
 func (p postgresRepository) CreateProductCategory(
 	ctx context.Context,
-	data []*synapsisv12.ProductCategory,
-) ([]*synapsisv12.ProductCategory, error) {
+	data []*synapsisv1.ProductCategory,
+) ([]*synapsisv1.ProductCategory, error) {
 	createdProductCategory := p.
 		orm.
 		WithContext(ctx).
@@ -37,9 +37,9 @@ func (p postgresRepository) CreateProductCategory(
 
 func (p postgresRepository) GetProductCategories(
 	ctx context.Context,
-	paging *synapsisv12.Pagination,
-) (int64, []*synapsisv12.ProductCategory, error) {
-	categories := []*synapsisv12.ProductCategory{}
+	paging *synapsisv1.Pagination,
+) (int64, []*synapsisv1.ProductCategory, error) {
+	categories := []*synapsisv1.ProductCategory{}
 	q := p.orm.
 		WithContext(ctx).Table("product_category")
 

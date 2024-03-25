@@ -11,8 +11,9 @@ message LoginRequest{
 }
 
 message LoginResponse{
-    string token = 1;
-    Claims claims = 2;
+    string accessToken = 1;
+    string refreshToken = 2;
+    Claims claims = 3;
 }
 
 message LogoutRequest{

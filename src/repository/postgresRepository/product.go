@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/khafidprayoga/synapsis-service/src/common/helper"
-	synapsisv12 "github.com/khafidprayoga/synapsis-service/src/gen/synapsis/v1"
+	synapsisv1 "github.com/khafidprayoga/synapsis-service/src/gen/synapsis/v1"
 	"github.com/samber/lo"
 	"gorm.io/gorm"
 	"time"
@@ -12,17 +12,17 @@ import (
 
 func (p postgresRepository) CreateProduct(
 	_ context.Context,
-	productData *synapsisv12.Product,
-) (*synapsisv12.CreateProductResponse, error) {
+	productData *synapsisv1.Product,
+) (*synapsisv1.CreateProductResponse, error) {
 	errDoTX := p.orm.Transaction(func(tx *gorm.DB) error {
 		errInsertProduct := tx.Create(&productData)
 		if errInsertProduct.Error != nil {
 			return errInsertProduct.Error
 		}
 
-		var productCatRel []*synapsisv12.ProductCategoryRelation
+		var productCatRel []*synapsisv1.ProductCategoryRelation
 		for _, category := range productData.GetProductCategories() {
-			productCatRel = append(productCatRel, &synapsisv12.ProductCategoryRelation{
+			productCatRel = append(productCatRel, &synapsisv1.ProductCategoryRelation{
 				ProductId:         productData.GetId(),
 				ProductCategoryId: category.GetId(),
 			})
@@ -39,16 +39,16 @@ func (p postgresRepository) CreateProduct(
 		return nil, errDoTX
 	}
 
-	return &synapsisv12.CreateProductResponse{
+	return &synapsisv1.CreateProductResponse{
 		Product: productData,
 	}, nil
 }
 
 func (p postgresRepository) GetProductById(
 	ctx context.Context,
-	productId string) (*synapsisv12.Product, error) {
+	productId string) (*synapsisv1.Product, error) {
 
-	productData := &synapsisv12.Product{}
+	productData := &synapsisv1.Product{}
 	findProductById := p.orm.
 		WithContext(ctx).
 		Where("product.id = ?", productId).
@@ -70,7 +70,7 @@ func (p postgresRepository) GetProductById(
 
 	//  get the category id
 	categoryId := lo.Map(relations,
-		func(relation *synapsisv12.ProductCategoryRelation, _ int) string {
+		func(relation *synapsisv1.ProductCategoryRelation, _ int) string {
 			return relation.GetProductCategoryId()
 		})
 
@@ -85,9 +85,9 @@ func (p postgresRepository) GetProductById(
 
 func (p postgresRepository) GetProducts(
 	ctx context.Context,
-	paging *synapsisv12.Pagination,
-) (int64, []*synapsisv12.Product, error) {
-	products := []*synapsisv12.Product{}
+	paging *synapsisv1.Pagination,
+) (int64, []*synapsisv1.Product, error) {
+	products := []*synapsisv1.Product{}
 	q := p.orm.
 		WithContext(ctx).
 		Table("product").
@@ -135,7 +135,7 @@ func (p postgresRepository) DeleteProductById(
 	productId string) error {
 	deleteProduct := p.orm.
 		WithContext(ctx).
-		Model(&synapsisv12.Product{}).
+		Model(&synapsisv1.Product{}).
 		Where("id = ?", productId).
 		Update("deleted_at", time.Now().UnixMilli())
 	if deleteProduct.Error != nil {
@@ -147,8 +147,8 @@ func (p postgresRepository) DeleteProductById(
 
 func (p postgresRepository) UpdateProduct(
 	ctx context.Context,
-	product *synapsisv12.Product,
-) (*synapsisv12.Product, error) {
+	product *synapsisv1.Product,
+) (*synapsisv1.Product, error) {
 	errDoTX := p.orm.Transaction(func(tx *gorm.DB) error {
 		tx = tx.WithContext(ctx)
 
@@ -161,15 +161,15 @@ func (p postgresRepository) UpdateProduct(
 		// update product category relation
 		deleteRelation := tx.
 			Where("product_id = ?", product.GetId()).
-			Delete(&synapsisv12.ProductCategoryRelation{})
+			Delete(&synapsisv1.ProductCategoryRelation{})
 		if deleteRelation.Error != nil {
 			return deleteRelation.Error
 		}
 
 		// insert new relation
-		relationId := []*synapsisv12.ProductCategoryRelation{}
+		relationId := []*synapsisv1.ProductCategoryRelation{}
 		for _, category := range product.GetProductCategories() {
-			relationId = append(relationId, &synapsisv12.ProductCategoryRelation{
+			relationId = append(relationId, &synapsisv1.ProductCategoryRelation{
 				ProductId:         product.GetId(),
 				ProductCategoryId: category.GetId(),
 			})

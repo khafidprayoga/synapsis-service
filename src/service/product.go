@@ -4,7 +4,7 @@ import (
 	"context"
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/khafidprayoga/synapsis-service/src/common/helper"
-	synapsisv12 "github.com/khafidprayoga/synapsis-service/src/gen/synapsis/v1"
+	synapsisv1 "github.com/khafidprayoga/synapsis-service/src/gen/synapsis/v1"
 	"github.com/samber/lo"
 	epb "google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
@@ -14,8 +14,8 @@ import (
 
 func (s synapsisService) CreateProduct(
 	ctx context.Context,
-	request *synapsisv12.CreateProductRequest,
-) (*synapsisv12.CreateProductResponse, error) {
+	request *synapsisv1.CreateProductRequest,
+) (*synapsisv1.CreateProductResponse, error) {
 	{
 		st := status.New(codes.InvalidArgument, "invalid request for create product data")
 
@@ -78,7 +78,7 @@ func (s synapsisService) CreateProduct(
 	if len(productCat) == 0 {
 		return nil, status.Errorf(codes.NotFound, "contains invalid product category (empty)")
 	}
-	product := &synapsisv12.Product{
+	product := &synapsisv1.Product{
 		Name:              request.GetName(),
 		Description:       request.GetDescription(),
 		Price:             request.GetPrice(),
@@ -103,8 +103,8 @@ func (s synapsisService) CreateProduct(
 
 func (s synapsisService) GetProductById(
 	ctx context.Context,
-	request *synapsisv12.GetProductByIdRequest,
-) (*synapsisv12.GetProductByIdResponse, error) {
+	request *synapsisv1.GetProductByIdRequest,
+) (*synapsisv1.GetProductByIdResponse, error) {
 	if validateProductIdErr := validation.Validate(
 		request.GetId(),
 		validation.Required); validateProductIdErr != nil {
@@ -121,15 +121,15 @@ func (s synapsisService) GetProductById(
 		return nil, formatted.Err()
 	}
 
-	return &synapsisv12.GetProductByIdResponse{
+	return &synapsisv1.GetProductByIdResponse{
 		Product: productData,
 	}, nil
 }
 
 func (s synapsisService) UpdateProduct(
 	ctx context.Context,
-	request *synapsisv12.UpdateProductRequest,
-) (*synapsisv12.GetProductByIdResponse, error) {
+	request *synapsisv1.UpdateProductRequest,
+) (*synapsisv1.GetProductByIdResponse, error) {
 	{
 		st := status.New(codes.InvalidArgument, "invalid request for create product data")
 
@@ -198,7 +198,7 @@ func (s synapsisService) UpdateProduct(
 		return nil, status.Errorf(codes.Internal, "error get product data by id: %s", errGetP)
 	}
 
-	var product = &synapsisv12.Product{
+	var product = &synapsisv1.Product{
 		Id:                request.GetId(),
 		Name:              request.GetName(),
 		Description:       request.GetDescription(),
@@ -220,14 +220,14 @@ func (s synapsisService) UpdateProduct(
 		return nil, formatted.Err()
 	}
 
-	return &synapsisv12.GetProductByIdResponse{
+	return &synapsisv1.GetProductByIdResponse{
 		Product: productData}, nil
 
 }
 
 func (s synapsisService) DeleteProduct(
 	ctx context.Context,
-	request *synapsisv12.DeleteProductRequest,
+	request *synapsisv1.DeleteProductRequest,
 ) (*emptypb.Empty, error) {
 	if validateProductIdErr := validation.Validate(
 		request.GetId(),
@@ -251,8 +251,8 @@ func (s synapsisService) DeleteProduct(
 
 func (s synapsisService) GetProducts(
 	ctx context.Context,
-	request *synapsisv12.GetProductsRequest,
-) (*synapsisv12.GetProductsResponse, error) {
+	request *synapsisv1.GetProductsRequest,
+) (*synapsisv1.GetProductsResponse, error) {
 	allowedOrderBy := []string{"name"}
 	metadataErr := map[string]string{
 		"allowedOrderBy": "name",
@@ -281,8 +281,8 @@ func (s synapsisService) GetProducts(
 		return nil, formatted.Err()
 	}
 
-	_, categories, errGetCategoies := s.productRepo.GetProductCategories(ctx, &synapsisv12.Pagination{
-		Page: &synapsisv12.Pagination_Page{
+	_, categories, errGetCategoies := s.productRepo.GetProductCategories(ctx, &synapsisv1.Pagination{
+		Page: &synapsisv1.Pagination_Page{
 			Limit:  100,
 			Offset: 0,
 		},
@@ -312,7 +312,7 @@ func (s synapsisService) GetProducts(
 		}
 
 		categoryId := lo.Map(relations,
-			func(relation *synapsisv12.ProductCategoryRelation, _ int) string {
+			func(relation *synapsisv1.ProductCategoryRelation, _ int) string {
 				return relation.GetProductCategoryId()
 			})
 
@@ -323,7 +323,7 @@ func (s synapsisService) GetProducts(
 						p.ProductCategories = append(p.ProductCategories, cat)
 						continue
 					}
-					p.ProductCategories = []*synapsisv12.ProductCategory{cat}
+					p.ProductCategories = []*synapsisv1.ProductCategory{cat}
 				}
 			}
 
@@ -331,7 +331,7 @@ func (s synapsisService) GetProducts(
 	}
 
 	request.Pagination.Count = count
-	return &synapsisv12.GetProductsResponse{
+	return &synapsisv1.GetProductsResponse{
 		Products:   products,
 		Pagination: request.GetPagination(),
 	}, nil

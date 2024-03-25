@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/khafidprayoga/synapsis-service/src/common/lib"
-	synapsisv12 "github.com/khafidprayoga/synapsis-service/src/gen/synapsis/v1"
+	synapsisv1 "github.com/khafidprayoga/synapsis-service/src/gen/synapsis/v1"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.uber.org/zap"
@@ -15,7 +15,7 @@ import (
 
 const userCollection = "user"
 
-func (s mongoRepository) GetUserByEmail(ctx context.Context, email string) (*synapsisv12.User, error) {
+func (s mongoRepository) GetUserByEmail(ctx context.Context, email string) (*synapsisv1.User, error) {
 	col := s.mongo.Collection(userCollection)
 	match := bson.M{
 		"email": email,
@@ -34,7 +34,7 @@ func (s mongoRepository) GetUserByEmail(ctx context.Context, email string) (*syn
 		return nil, fmt.Errorf("error find user with email: %v", email)
 	}
 
-	u := &synapsisv12.User{}
+	u := &synapsisv1.User{}
 	if e := res.Decode(u); e != nil {
 		s.log.Error("error decoding user", zap.Error(e))
 		return nil, fmt.Errorf("error decoding user with email: %v", email)
@@ -45,9 +45,9 @@ func (s mongoRepository) GetUserByEmail(ctx context.Context, email string) (*syn
 
 func (s mongoRepository) CreateUser(
 	ctx context.Context,
-	request *synapsisv12.CreateUserRequest,
+	request *synapsisv1.CreateUserRequest,
 	isSeeder bool,
-) (*synapsisv12.CreateUserResponse, error) {
+) (*synapsisv1.CreateUserResponse, error) {
 	hashedPass, errHash := commonLib.HashPasssword(request.Password)
 	if errHash != nil {
 		return nil, errors.New("error hashing password")
@@ -55,13 +55,13 @@ func (s mongoRepository) CreateUser(
 
 	at := timestamppb.Now()
 	col := s.mongo.Collection(userCollection)
-	user := &synapsisv12.User{
+	user := &synapsisv1.User{
 		Id:       uuid.New().String(),
 		FullName: request.GetFullName(),
 		Email:    request.GetEmail(),
 		Password: string(hashedPass),
 		Dob:      request.GetDob(),
-		Dt: &synapsisv12.DT{
+		Dt: &synapsisv1.DT{
 			CreatedAt: at,
 			UpdatedAt: at,
 			DeletedAt: nil,
@@ -78,12 +78,12 @@ func (s mongoRepository) CreateUser(
 		return nil, errInsert
 	}
 
-	return &synapsisv12.CreateUserResponse{
+	return &synapsisv1.CreateUserResponse{
 		User: user,
 	}, nil
 }
 
-func (s mongoRepository) GetUserById(ctx context.Context, userId string) (*synapsisv12.User, error) {
+func (s mongoRepository) GetUserById(ctx context.Context, userId string) (*synapsisv1.User, error) {
 	col := s.mongo.Collection(userCollection)
 	match := bson.M{
 		"id": userId,
@@ -102,7 +102,7 @@ func (s mongoRepository) GetUserById(ctx context.Context, userId string) (*synap
 		return nil, fmt.Errorf("error find user with id: %v", userId)
 	}
 
-	u := &synapsisv12.User{}
+	u := &synapsisv1.User{}
 	if e := res.Decode(u); e != nil {
 		s.log.Error("error decoding user", zap.Error(e))
 		return nil, fmt.Errorf("error decoding user with id: %v", userId)
@@ -134,7 +134,7 @@ func (s mongoRepository) DeleteUserById(ctx context.Context, userId string) erro
 	return nil
 }
 
-func (s mongoRepository) UpdateUser(_ context.Context, user *synapsisv12.User) (*synapsisv12.User, error) {
+func (s mongoRepository) UpdateUser(_ context.Context, user *synapsisv1.User) (*synapsisv1.User, error) {
 	//TODO implement me
 	panic("implement me")
 }
