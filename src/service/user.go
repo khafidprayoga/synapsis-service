@@ -67,13 +67,13 @@ func (svc synapsisService) CreateUser(
 
 	if existingUser != nil {
 		st := status.New(codes.InvalidArgument, "email already taken")
-		_, e := st.WithDetails(
+		formatted, _ := st.WithDetails(
 			&epb.LocalizedMessage{
 				Locale:  language.Indonesian.String(),
 				Message: "email sudah terpakai",
 			})
 
-		return nil, e
+		return nil, formatted.Err()
 	}
 
 	return svc.userRepo.CreateUser(ctx, request, false)
